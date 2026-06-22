@@ -1,0 +1,29 @@
+{
+  "name": "ponsul-webapp",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "건강폰술(가칭) — 절주·대체형 소셜 WebApp. 골격(S2 skeleton). name 필드는 npm 패키지명일 뿐 앱인토스 appName이 아님(appName은 변경 불가·미확정 → REVIEW).",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitejs/plugin-react": "^4.3.2",
+    "jsdom": "^29.1.1",
+    "vite": "^5.4.8",
+    "vitest": "^2.1.9"
+  }
+}
