@@ -23,9 +23,9 @@ export default function DrinkSelect() {
           {DRINKS.map((d) => (
             <button key={d.key} className="drink-card" onClick={() => pick(d.key)}>
               {d.celebrate && <span className="badge">축하 연출</span>}
-              {/* 잔 이미지 보유 종류는 실제 잔 썸네일, 없으면 CSS 색 스와치 폴백(샴페인). F-CR-01. */}
-              {d.glass ? (
-                <img className="drink-thumb" src={d.glass} alt="" draggable={false} />
+              {/* 술 선택은 '병' 이미지로 표시(어떤 술을 고르는지). 없으면 CSS 색 스와치 폴백. F-CR-01. */}
+              {d.bottle ? (
+                <img className="drink-thumb" src={d.bottle} alt="" draggable={false} />
               ) : (
                 <span className="drink-swatch">
                   <span className="swatch-liquid" style={{ background: `linear-gradient(180deg, ${d.colors[0]}, ${d.colors[1]})` }} />

@@ -170,14 +170,20 @@ export default function PourInteraction() {
               )}
               {/* 술줄기 (따르기) */}
               <div className={`pour-el stream ${showStream ? '' : 'is-hidden'}`} style={{ background: `linear-gradient(180deg, ${c0}, ${c1})` }} />
-              {/* 잔 + 액체 (현행 scaleY 유지 — 팀 WebKit 수정 보존) */}
+              {/* 잔 (S-04 = 잔 이미지). 채움은 액체 scaleY가 잔 이미지 뒤에서 차오름.
+                  // REVIEW(기기 확인): 실 이미지 잔과 액체 채움 정렬은 화면에서 시각 확인 필요(이미지 미열람). */}
               <div className={`pour-el glass-wrap ${showGlass ? '' : 'is-hidden'}`}>
                 <div className="glass-shape">
-                  <div
-                    className="glass-liquid"
-                    // 채움은 transform: scaleY (CSS 주석 참조 — WebKit %-height 버그 회피).
-                    style={{ transform: `scaleY(${fill / 100})`, background: `linear-gradient(180deg, ${c0}, ${c1})` }}
-                  />
+                  <div className="glass-fill-clip">
+                    <div
+                      className="glass-liquid"
+                      // 채움은 transform: scaleY (CSS 주석 참조 — WebKit %-height 버그 회피).
+                      style={{ transform: `scaleY(${fill / 100})`, background: `linear-gradient(180deg, ${c0}, ${c1})` }}
+                    />
+                  </div>
+                  {drink.glass ? (
+                    <img className="glass-img" src={drink.glass} alt="" draggable={false} />
+                  ) : null}
                 </div>
                 {showAhh && <div className="speech">캬~</div>}
               </div>

@@ -13,21 +13,21 @@ export const assetUrl = (p) => `${import.meta.env.BASE_URL}assets/${p}`
 
 // 종류별 색·점도(차오름 속도) 차등 — F-CR-01.
 // pourFullMs = 0→100% 도달 시간(ms). 점도가 걸쭉할수록 느리게.
-// bottle/glass = 정적 이미지(없으면 CSS 폴백), sound = 따르기 사운드(없으면 무음/콘솔 mock),
-// frames = 따르기 프레임 수(소주만 30, 나머지 0 → 현행 scaleY 액체 유지).
+// bottle = S-03 술 선택 썸네일 + S-04 대기/따르기 병. glass = S-04 잔(채움 잔). glassFilled = 가득 찬 잔(보조).
+// sound = 따르기 사운드(없으면 무음/콘솔 mock). frames = 따르기 프레임 수(소주만 30, 나머지 0 → scaleY 액체).
 // // ASSUMPTION: pourFullMs·viscosity 등급은 문서에 없는 임의값. 검수·튜닝 단계 조정.
 export const DRINKS = [
   { key: 'soju', label: '소주', colors: ['#EFE9DA', '#D9D0BC'], pourFullMs: 2000, viscosity: '묽음', foam: false, celebrate: false,
-    bottle: assetUrl('bottles/soju.png'), glass: assetUrl('glasses/soju.png'), sound: assetUrl('sounds/pour/soju.mp3'), frames: 30 },
+    bottle: assetUrl('bottles/soju.png'), glass: assetUrl('glasses/soju.png'), glassFilled: assetUrl('glasses_filled/soju.png'), sound: assetUrl('sounds/pour/soju.mp3'), frames: 30 },
   { key: 'beer', label: '맥주', colors: ['#E8B96A', '#C8893F'], pourFullMs: 2200, viscosity: '보통', foam: true, celebrate: false,
-    bottle: assetUrl('bottles/beer.png'), glass: assetUrl('glasses/beer.png'), sound: assetUrl('sounds/pour/beer.mp3'), frames: 0 },
+    bottle: assetUrl('bottles/beer.png'), glass: assetUrl('glasses/beer.png'), glassFilled: assetUrl('glasses_filled/beer.png'), sound: assetUrl('sounds/pour/beer.mp3'), frames: 0 },
   { key: 'wine', label: '와인', colors: ['#9b3050', '#6e1f3a'], pourFullMs: 2600, viscosity: '중간', foam: false, celebrate: false,
-    bottle: assetUrl('bottles/wine.png'), glass: assetUrl('glasses/wine.png'), sound: null, frames: 0 },
+    bottle: assetUrl('bottles/wine.png'), glass: assetUrl('glasses/wine.png'), glassFilled: assetUrl('glasses_filled/wine.png'), sound: null, frames: 0 },
   { key: 'makgeolli', label: '막걸리', colors: ['#F4EFE6', '#E3DCCB'], pourFullMs: 2800, viscosity: '걸쭉', foam: false, celebrate: false,
-    bottle: assetUrl('bottles/makgeolli.png'), glass: assetUrl('glasses/makgeolli.png'), sound: null, frames: 0 },
-  // 샴페인: 정적/프레임/사운드 에셋 없음 → 전부 CSS 폴백.
+    bottle: assetUrl('bottles/makgeolli.png'), glass: assetUrl('glasses/makgeolli.png'), glassFilled: assetUrl('glasses_filled/makgeolli.png'), sound: null, frames: 0 },
+  // 샴페인: 새 세트로 병·잔·채워진잔 확보(CSS 폴백 해제). 코르크·뚜껑열린병은 S-05용(champagne/ 배치, 미연결).
   { key: 'champagne', label: '샴페인', colors: ['#F2D89A', '#D9B65E'], pourFullMs: 2400, viscosity: '발포', foam: false, celebrate: true,
-    bottle: null, glass: null, sound: null, frames: 0 },
+    bottle: assetUrl('bottles/champagne.png'), glass: assetUrl('glasses/champagne.png'), glassFilled: assetUrl('glasses_filled/champagne.png'), sound: null, frames: 0 },
 ]
 export const DRINK_MAP = Object.fromEntries(DRINKS.map((d) => [d.key, d]))
 
