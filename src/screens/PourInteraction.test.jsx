@@ -21,14 +21,13 @@ beforeEach(() => {
   now = 0
   vi.spyOn(performance, 'now').mockImplementation(() => now)
   useAppStore.getState().setDrink('soju')
-  useAppStore.getState().resetRecord()
 })
 afterEach(() => {
   vi.useRealTimers()
   vi.restoreAllMocks()
 })
 
-// 한 번의 따르기(가득)→마시기(완전 비움) 사이클 수행. 비움 시 누적 +1.
+// 한 번의 따르기(가득)→마시기(완전 비움)→대기 복귀 사이클 수행.
 function pourAndEmpty(stage) {
   now = 0
   fireEvent.pointerDown(stage) // 대기 → 따르기 시작
@@ -48,7 +47,6 @@ describe('S-04 상태 순환 (F-CR-02·03·04)', () => {
     fireEvent.pointerUp(stage)
     expect(container.textContent).toContain('길게 눌러 따르기') // 대기 상태 문구
     expect(container.textContent).not.toContain('탭해서 비우기')
-    expect(useAppStore.getState().record.pourCount).toBe(0)
   })
 
   it('정상 따르기: 8% 이상이면 마시기로 진행', () => {
@@ -61,22 +59,27 @@ describe('S-04 상태 순환 (F-CR-02·03·04)', () => {
     expect(container.textContent).toContain('탭해서 비우기')
   })
 
-  it('마시기 4탭 → 비움("캬~") → 누적 +1 → 대기 복귀', () => {
+  it('마시기 중 비움까지 가면 "캬~" 노출 후 대기 복귀', () => {
     const { container } = renderPour()
     const stage = stageOf(container)
-    pourAndEmpty(stage)
-    expect(useAppStore.getState().record.pourCount).toBe(1)
-    // 비움 후 대기 복귀
-    expect(container.textContent).toContain('길게 눌러 따르기')
+    now = 0
+    fireEvent.pointerDown(stage)
+    now = 2000
+    fireEvent.pointerUp(stage) // 마시기
+    for (let i = 0; i < 4; i++) fireEvent.pointerDown(stage) // 비움
+    expect(container.textContent).toContain('캬~') // 비움 연출(타이머 전)
+    act(() => vi.advanceTimersByTime(1200))
+    expect(container.textContent).toContain('길게 눌러 따르기') // 대기 복귀
   })
 })
 
 describe('안정성 — 반복 전환 누수 없음 (비기능 §6)', () => {
-  it('10회 따르기/마시기 사이클에서 누적이 정확히 10', () => {
+  it('10회 따르기/마시기 사이클 후에도 정상 대기 상태', () => {
     const { container } = renderPour()
     const stage = stageOf(container)
     for (let i = 0; i < 10; i++) pourAndEmpty(stage)
-    expect(useAppStore.getState().record.pourCount).toBe(10)
+    // 반복 후에도 크래시 없이 대기 상태로 정상 동작
+    expect(container.textContent).toContain('길게 눌러 따르기')
   })
 
   it('언마운트 시 rAF·타이머 정리(cleanup) 호출', () => {

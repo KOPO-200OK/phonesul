@@ -8,6 +8,7 @@
 // // REVIEW(복귀 BGM 동작): 백그라운드→포그라운드 복귀 시 BGM 재생은 과거 반려 사례.
 //    반드시 대상 실행 환경(토스 WebView)에서 사람이 동작 확인할 것(context §4·§10).
 import { useAppStore } from '../store/useAppStore.js'
+import { stopPourSound } from './feedback.js'
 
 let bgmPlaying = false
 
@@ -37,8 +38,9 @@ export function isBgmPlaying() {
 // F-SY-04: 백그라운드 전환 시 즉시 정지, 복귀 시 재생.
 function handleVisibility() {
   if (document.hidden) {
-    // 백그라운드: 즉시 정지. 백그라운드 음원 무단 재생 금지.
+    // 백그라운드: 즉시 정지(BGM + 진행 중 따르기 사운드). 백그라운드 음원 무단 재생 금지.
     stopBgm()
+    stopPourSound()
     if (import.meta.env.DEV) console.debug('[audio] background → 정지')
   } else {
     // 포그라운드 복귀: BGM 재생 재개.

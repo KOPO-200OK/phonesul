@@ -1,4 +1,4 @@
-// App 루트 — 라우팅 골격 + 공통 종료 모달(S-10) 마운트 지점.
+// App 루트 — 라우팅 골격 + 공통 종료 모달(S-09) 마운트 지점.
 //
 // 라우팅 전략: HashRouter.
 // // UNVERIFIED: 앱인토스 WebView의 URL/딥링크(건배 수신 S-07 링크 진입) 처리 방식 미확인.
@@ -15,13 +15,12 @@ import PourInteraction from './screens/PourInteraction.jsx'
 import Celebrate from './screens/Celebrate.jsx'
 import CheersRequest from './screens/CheersRequest.jsx'
 import CheersReceive from './screens/CheersReceive.jsx'
-import HealthRecord from './screens/HealthRecord.jsx'
 import Settings from './screens/Settings.jsx'
 import ExitModal from './components/ExitModal.jsx'
 import { ExitModalContext } from './components/exitModalContext.js'
 
 export default function App() {
-  // 종료 확인 모달(S-10 / F-SY-05)은 모든 화면에서 닫기(X)로 호출되는 공통 오버레이.
+  // 종료 확인 모달(S-09 / F-SY-05)은 모든 화면에서 닫기(X)로 호출되는 공통 오버레이.
   // 골격에선 노출 상태만 관리하고 실제 종료 동작(앱인토스 종료)은 후속 단계에서 연결.
   const [exitOpen, setExitOpen] = useState(false)
 
@@ -46,16 +45,14 @@ export default function App() {
           <Route path="/cheers" element={<CheersRequest />} />
           {/* S-07 건배 수신(링크 진입) */}
           <Route path="/cheers/receive" element={<CheersReceive />} />
-          {/* S-08 건강 기록 */}
-          <Route path="/record" element={<HealthRecord />} />
-          {/* S-09 설정 */}
+          {/* S-08 설정 */}
           <Route path="/settings" element={<Settings />} />
           {/* 알 수 없는 경로는 스플래시로 */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </HashRouter>
 
-      {/* S-10 종료 확인 모달(공통 오버레이) */}
+      {/* S-09 종료 확인 모달(공통 오버레이) */}
       <ExitModal open={exitOpen} onClose={() => setExitOpen(false)} />
     </ExitModalContext.Provider>
   )

@@ -20,3 +20,11 @@ export function isHollow(level, threshold = HOLLOW_THRESHOLD) {
 export function decrementDrink(level, perTap = DRINK_PER_TAP) {
   return Math.max(0, level - perTap)
 }
+
+// 차오름(0~100%)을 따르기 프레임 인덱스(1~frameCount)로 매핑(소주 프레임 시퀀스용).
+export function frameIndexFromFill(fill, frameCount) {
+  if (!frameCount || frameCount < 1) return 1
+  const clamped = Math.min(100, Math.max(0, fill))
+  const idx = Math.round((clamped / 100) * (frameCount - 1)) + 1
+  return Math.min(frameCount, Math.max(1, idx))
+}

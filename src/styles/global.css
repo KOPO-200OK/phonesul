@@ -35,6 +35,7 @@ body {
 }
 
 .logo { font-size: 40px; font-weight: 900; }
+.logo-img { width: 120px; height: auto; object-fit: contain; }
 .slogan { color: var(--mut); margin: 4px 0 20px; }
 
 .btn {
@@ -60,6 +61,7 @@ body {
 }
 .drink-name { font-weight: 600; }
 .drink-visc { font-size: 10px; color: var(--mut); }
+.drink-thumb { width: 44px; height: 56px; object-fit: contain; }
 /* 종류별 색·거품 미리보기(CSS 플레이스홀더 — REVIEW(에셋 일관성)) */
 .drink-swatch {
   position: relative; width: 30px; height: 42px; overflow: hidden;
@@ -74,7 +76,6 @@ body {
   color: #2a1c08; background: var(--accent); padding: 1px 6px; border-radius: 999px;
 }
 .card.card-on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-.record-cap { margin-bottom: -6px; }
 
 .stage-placeholder {
   width: 100%; max-width: 320px; min-height: 160px; display: flex; align-items: center; justify-content: center;
@@ -104,6 +105,20 @@ body {
   transform-origin: 80% 90%;
 }
 .bottle.tilt { transform: rotate(-32deg) translate(-10px, -6px); }
+
+/* 병 이미지(정적 에셋 보유 종류). 대기/따르기 공용, 따르기 시 기울임. */
+.bottle-img {
+  position: absolute; top: 8px; left: 50%; margin-left: -34px;
+  width: 68px; height: auto; object-fit: contain;
+  transform-origin: 80% 90%;
+}
+.bottle-img.tilt { transform: rotate(-32deg) translate(-10px, -6px); }
+
+/* 소주 따르기 프레임 시퀀스 */
+.pour-frame {
+  width: 200px; height: 300px; object-fit: contain;
+  user-select: none; -webkit-user-select: none; pointer-events: none;
+}
 
 /* 술줄기 — 따르기 */
 .stream {
@@ -139,13 +154,6 @@ body {
 
 .pour-readout { text-align: center; min-height: 38px; }
 .pour-readout .big { font-size: 14px; font-weight: 700; }
-
-.bignum { font-size: 44px; font-weight: 900; color: var(--accent); }
-.bignum .unit { font-size: 16px; margin-left: 4px; }
-.stat-row { display: flex; gap: 10px; width: 100%; max-width: 320px; }
-.stat { flex: 1; background: var(--surf); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
-.stat-v { font-size: 15px; font-weight: 800; color: var(--accent); }
-.stat-k { font-size: 10px; color: var(--mut); margin-top: 2px; }
 
 .row {
   display: flex; align-items: center; justify-content: space-between;

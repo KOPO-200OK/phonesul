@@ -1,4 +1,4 @@
-// S-10 종료 확인 모달(공통 오버레이) — F-SY-05.
+// S-09 종료 확인 모달(공통 오버레이) — F-SY-05. (v0.2: 화면 재정렬로 S-09)
 // 골격: 노출/취소만. '종료' 선택 시 실제 앱 종료(앱인토스)는 후속 단계 연결.
 // // UNVERIFIED: 앱인토스 WebView에서의 앱 종료 호출 방식 미확인(SDK/공식문서 확인 필요).
 export default function ExitModal({ open, onClose }) {

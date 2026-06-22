@@ -7,9 +7,9 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppHeader from '../components/AppHeader.jsx'
 import { useAppStore } from '../store/useAppStore.js'
-import { playSound, haptic } from '../lib/feedback.js'
-import { DRINK_MAP, MODE_MAP } from '../data/presets.js'
-import { computeFill, isHollow, decrementDrink } from '../lib/pour.js'
+import { playSound, haptic, startPourSound, stopPourSound } from '../lib/feedback.js'
+import { DRINK_MAP, MODE_MAP, sojuFrameUrl } from '../data/presets.js'
+import { computeFill, isHollow, decrementDrink, frameIndexFromFill } from '../lib/pour.js'
 
 const PHASE = { IDLE: 'idle', POURING: 'pouring', DRINKING: 'drinking', EMPTY: 'empty' }
 
@@ -21,7 +21,6 @@ export default function PourInteraction() {
   const navigate = useNavigate()
   const drinkKey = useAppStore((s) => s.drink) ?? 'soju'
   const mode = useAppStore((s) => s.mode)
-  const incrementPour = useAppStore((s) => s.incrementPour)
 
   const [phase, setPhase] = useState(PHASE.IDLE)
   const [fill, setFill] = useState(0) // 0~100
@@ -41,6 +40,7 @@ export default function PourInteraction() {
   useEffect(() => () => {
     cancelAnimationFrame(rafRef.current)
     clearTimeout(emptyTimerRef.current)
+    stopPourSound()
   }, [])
 
   const currentFill = (now) => computeFill(now - pourStartRef.current, fullMs)
@@ -48,7 +48,7 @@ export default function PourInteraction() {
   const startPour = useCallback(() => {
     setPhase(PHASE.POURING)
     pourStartRef.current = performance.now()
-    playSound('pour')
+    startPourSound(drink.sound) // 소주·맥주는 실제 사운드, 나머지는 무음(시각 피드백 유지)
     haptic('light')
     const tick = (now) => {
       const next = currentFill(now)
@@ -60,7 +60,7 @@ export default function PourInteraction() {
       }
     }
     rafRef.current = requestAnimationFrame(tick)
-  }, [fullMs])
+  }, [fullMs, drink.sound])
 
   const endPour = useCallback(() => {
     if (phaseRef.current !== PHASE.POURING) return
@@ -69,7 +69,7 @@ export default function PourInteraction() {
     // 떼는 시점 실제 수위를 refs로 계산(상태 지연 방지).
     const level = currentFill(performance.now())
     setFill(level)
-    playSound('pour_stop')
+    stopPourSound()
     if (isHollow(level)) {
       // F-CR-04 헛누름: 마시기로 가지 않고 대기 복귀.
       setFill(0)
@@ -87,16 +87,15 @@ export default function PourInteraction() {
     const next = decrementDrink(fill)
     setFill(next)
     if (next <= 0) {
-      // 비움 완료 → "캬~" + 빈 잔, 누적 +1(F-HL-01), 잠시 후 대기 복귀.
+      // 비움 완료 → "캬~" + 빈 잔, 잠시 후 대기 복귀. (누적 기록 없음 — v0.2에서 F-HL 제거)
       playSound('ahh')
-      incrementPour()
       setPhase(PHASE.EMPTY)
       emptyTimerRef.current = setTimeout(() => {
         setFill(0)
         setPhase(PHASE.IDLE)
       }, EMPTY_HOLD_MS)
     }
-  }, [fill, incrementPour])
+  }, [fill])
 
   const repour = () => {
     clearTimeout(emptyTimerRef.current)
@@ -118,6 +117,10 @@ export default function PourInteraction() {
   const showStream = phase === PHASE.POURING
   const showGlass = phase === PHASE.POURING || phase === PHASE.DRINKING || phase === PHASE.EMPTY
   const showAhh = phase === PHASE.EMPTY
+
+  // 소주(프레임 보유): 따르기 동안 프레임 시퀀스로 연출. 나머지는 현행 CSS+scaleY 유지.
+  const sojuPour = drink.frames > 0 && phase === PHASE.POURING
+  const frameSrc = drink.frames > 0 ? sojuFrameUrl(frameIndexFromFill(fill, drink.frames)) : null
 
   const stageHint =
     phase === PHASE.IDLE
@@ -149,21 +152,37 @@ export default function PourInteraction() {
           role="button"
           aria-label={stageTitle || '음주 인터랙션'}
         >
-          {/* 병 (대기·따르기) */}
-          <div className={`pour-el bottle ${showBottle ? '' : 'is-hidden'} ${phase === PHASE.POURING ? 'tilt' : ''}`} />
-          {/* 술줄기 (따르기) */}
-          <div className={`pour-el stream ${showStream ? '' : 'is-hidden'}`} style={{ background: `linear-gradient(180deg, ${c0}, ${c1})` }} />
-          {/* 잔 + 액체 */}
-          <div className={`pour-el glass-wrap ${showGlass ? '' : 'is-hidden'}`}>
-            <div className="glass-shape">
-              <div
-                className="glass-liquid"
-                // 채움은 transform: scaleY (CSS 주석 참조 — WebKit %-height 버그 회피).
-                style={{ transform: `scaleY(${fill / 100})`, background: `linear-gradient(180deg, ${c0}, ${c1})` }}
-              />
-            </div>
-            {showAhh && <div className="speech">캬~</div>}
-          </div>
+          {sojuPour ? (
+            /* 소주 따르기: fill→frame_01~30 시퀀스 */
+            <img className="pour-frame" src={frameSrc} alt="" draggable={false} />
+          ) : (
+            <>
+              {/* 병 (대기·따르기). 이미지 보유 종류는 이미지, 없으면 CSS 폴백(샴페인). */}
+              {drink.bottle ? (
+                <img
+                  className={`pour-el bottle-img ${showBottle ? '' : 'is-hidden'} ${phase === PHASE.POURING ? 'tilt' : ''}`}
+                  src={drink.bottle}
+                  alt=""
+                  draggable={false}
+                />
+              ) : (
+                <div className={`pour-el bottle ${showBottle ? '' : 'is-hidden'} ${phase === PHASE.POURING ? 'tilt' : ''}`} />
+              )}
+              {/* 술줄기 (따르기) */}
+              <div className={`pour-el stream ${showStream ? '' : 'is-hidden'}`} style={{ background: `linear-gradient(180deg, ${c0}, ${c1})` }} />
+              {/* 잔 + 액체 (현행 scaleY 유지 — 팀 WebKit 수정 보존) */}
+              <div className={`pour-el glass-wrap ${showGlass ? '' : 'is-hidden'}`}>
+                <div className="glass-shape">
+                  <div
+                    className="glass-liquid"
+                    // 채움은 transform: scaleY (CSS 주석 참조 — WebKit %-height 버그 회피).
+                    style={{ transform: `scaleY(${fill / 100})`, background: `linear-gradient(180deg, ${c0}, ${c1})` }}
+                  />
+                </div>
+                {showAhh && <div className="speech">캬~</div>}
+              </div>
+            </>
+          )}
         </div>
 
         {/* 시각 피드백(다중 감각·접근성): 진동/사운드를 꺼도 상태·수위를 화면으로 인지 가능 */}
@@ -182,7 +201,6 @@ export default function PourInteraction() {
             <button className="btn ghost" onClick={() => navigate('/celebrate')}>샴페인 축하</button>
           )}
           <button className="btn ghost" onClick={() => navigate('/cheers')}>건배하기</button>
-          <button className="btn ghost" onClick={() => navigate('/record')}>나의 기록</button>
           <button className="btn ghost" onClick={() => navigate('/settings')}>설정</button>
         </div>
       </div>
