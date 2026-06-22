@@ -1,4 +1,4 @@
-// 영속 저장 mock — context §3(로컬 영구), F-SY-01·02 설정 지속, F-HL-01 누적 지속.
+// 영속 저장 mock — context §3(로컬 영구), F-SY-01·02 설정 지속(모드·사운드·진동).
 //
 // // UNVERIFIED: 실제 앱인토스 Storage SDK로 대체 필요(토스 WebView). 키/직렬화/용량 규약 미확인.
 //   데스크톱 로컬 테스트를 위해 localStorage 폴백으로 mock한다. 인터페이스(loadState/saveState)는 유지.

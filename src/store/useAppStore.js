@@ -5,9 +5,9 @@
 //  - drink            : 현재 선택 술(5종 키)                 → 세션(미영속)
 //  - settings.sound   : 사운드 On/Off (F-SY-01)             → 로컬 영구
 //  - settings.haptic  : 진동 On/Off (F-SY-02)               → 로컬 영구
-//  - record.pourCount : 가상으로 비운 누적 잔 수 (F-HL-01)   → 로컬 영구
 //
 // 술/모드 데이터는 src/data/presets.js가 단일 출처.
+// (v0.2: 기록 기능 F-HL 제거 — 누적 잔 수 상태 없음)
 import { create } from 'zustand'
 import { loadState, saveState } from '../lib/storage.js'
 
@@ -20,7 +20,6 @@ const initialState = {
     sound: persisted.settings?.sound ?? true,
     haptic: persisted.settings?.haptic ?? true,
   },
-  record: { pourCount: persisted.record?.pourCount ?? 0 },
 }
 
 export const useAppStore = create((set) => ({
@@ -45,20 +44,5 @@ export const useAppStore = create((set) => ({
       const settings = { ...s.settings, haptic }
       saveState({ settings })
       return { settings }
-    }),
-
-  // F-HL-01: 마시기 완료(F-CR-03)마다 +1 누적.
-  incrementPour: () =>
-    set((s) => {
-      const record = { pourCount: s.record.pourCount + 1 }
-      saveState({ record })
-      return { record }
-    }),
-
-  resetRecord: () =>
-    set(() => {
-      const record = { pourCount: 0 }
-      saveState({ record })
-      return { record }
     }),
 }))

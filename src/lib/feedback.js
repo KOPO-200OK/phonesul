@@ -15,6 +15,35 @@ export function playSound(name) {
   if (import.meta.env.DEV) console.debug('[sound]', name)
 }
 
+// 따르기 사운드(파일 기반, 소주·맥주 보유) — 누르는 동안 루프 재생.
+// // UNVERIFIED: 브라우저 자동재생 정책·앱인토스 무음/백그라운드 정책은 실기기 검증 필요.
+let pourAudio = null
+
+export function startPourSound(url) {
+  stopPourSound()
+  if (!url) return // 사운드 미보유 종류 → 무음(시각 피드백은 유지)
+  if (!useAppStore.getState().settings.sound) return // F-SY-01
+  try {
+    pourAudio = new Audio(url)
+    pourAudio.loop = true
+    const p = pourAudio.play()
+    if (p && typeof p.catch === 'function') p.catch(() => {}) // 자동재생 차단 등 무시
+  } catch {
+    pourAudio = null
+  }
+}
+
+export function stopPourSound() {
+  if (!pourAudio) return
+  try {
+    pourAudio.pause()
+    pourAudio.currentTime = 0
+  } catch {
+    /* ignore */
+  }
+  pourAudio = null
+}
+
 export function haptic(type = 'light') {
   // F-SY-02: 진동 Off면 호출 안 함(단, 시각·청각 피드백은 화면에서 항상 유지 — 접근성).
   if (!useAppStore.getState().settings.haptic) return

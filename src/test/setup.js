@@ -12,6 +12,12 @@ if (typeof globalThis.PointerEvent === 'undefined') {
 globalThis.requestAnimationFrame = () => 0
 globalThis.cancelAnimationFrame = () => {}
 
+// jsdom은 HTMLMediaElement.play/pause 미구현 → 따르기 사운드 테스트 시 에러. 무해 스텁으로 대체.
+if (globalThis.HTMLMediaElement) {
+  HTMLMediaElement.prototype.play = () => Promise.resolve()
+  HTMLMediaElement.prototype.pause = () => {}
+}
+
 afterEach(() => {
   cleanup()
   try {

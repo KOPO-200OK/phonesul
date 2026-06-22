@@ -1,0 +1,1978 @@
+<!-- 폰술 화면설계서 v0.2 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>폰술 화면설계서 v0.2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  :root {
+    --paper: #f4f0e7;
+    --paper2: #fbf8f2;
+    --ink: #211e18;
+    --muted: #6b6357;
+    --line: #ddd5c6;
+    --accent: #b5763a;
+    --accent-dk: #7e5526;
+    --accent-soft: #ede0cc;
+    --scr-bg: #15171e;
+    --scr-surf: #232734;
+    --scr-line: #343a49;
+    --scr-text: #ece7dd;
+    --scr-mut: #9aa0ad;
+    --liq1: #e8b96a;
+    --liq2: #c8893f;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family:
+      "Noto Sans KR",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+  }
+
+  .cover {
+    padding: 72px 0 36px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .eyebrow {
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    font-weight: 700;
+    color: var(--accent-dk);
+    text-transform: uppercase;
+  }
+  .cover h1 {
+    font-size: clamp(46px, 9vw, 84px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin: 6px 0 0;
+    line-height: 0.98;
+  }
+  .cover h1 small {
+    font-size: 0.34em;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0;
+  }
+  .cover .sub {
+    font-size: clamp(18px, 2.4vw, 24px);
+    font-weight: 700;
+    margin-top: 10px;
+  }
+  .cover .desc {
+    color: var(--muted);
+    margin-top: 14px;
+    max-width: 640px;
+    font-size: 15px;
+  }
+  .glassmark {
+    display: inline-block;
+    vertical-align: -6px;
+    margin-right: 14px;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 36px;
+    margin-top: 26px;
+    font-size: 13.5px;
+  }
+  .meta div {
+    display: flex;
+    gap: 8px;
+  }
+  .meta b {
+    color: var(--accent-dk);
+  }
+  .meta span {
+    color: var(--muted);
+  }
+
+  section {
+    margin-top: 64px;
+  }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    border-bottom: 1.5px solid var(--accent);
+    padding-bottom: 8px;
+  }
+  .sec-no {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--accent);
+  }
+  .sec-head h2 {
+    font-size: 24px;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .lead {
+    color: var(--muted);
+    margin: 14px 0 24px;
+    max-width: 780px;
+    font-size: 14.5px;
+  }
+
+  table.t {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: var(--paper2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  table.t th {
+    background: #20242e;
+    color: #fff;
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 700;
+    font-size: 12.5px;
+  }
+  table.t td {
+    padding: 10px 12px;
+    border-top: 1px solid var(--line);
+    vertical-align: top;
+  }
+  table.t tr:nth-child(even) td {
+    background: #f6f1e8;
+  }
+  .id {
+    font-weight: 700;
+    color: var(--accent-dk);
+    white-space: nowrap;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    margin-left: 6px;
+  }
+
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    background: var(--paper2);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .node {
+    background: #fff;
+    border: 1.5px solid var(--accent);
+    color: var(--accent-dk);
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 9px 13px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  .node small {
+    display: block;
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 10.5px;
+  }
+  .arrow {
+    color: var(--accent);
+    font-weight: 900;
+    font-size: 16px;
+  }
+  .node.loop {
+    border-style: dashed;
+    background: #fbf6ee;
+  }
+  .node.cham {
+    border-color: #9a6a2a;
+    background: #fbf1e2;
+  }
+  .flow-note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  .screen {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 30px;
+    align-items: start;
+    background: var(--paper2);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 26px;
+    margin-top: 22px;
+  }
+  .screen.wide {
+    display: block;
+  }
+  .screen-meta h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 900;
+  }
+  .screen-meta .sid {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  .screen-meta .path {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+  .screen-meta .path b {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .desc-tab {
+    margin-top: 16px;
+  }
+  .desc-tab table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  .desc-tab th {
+    text-align: left;
+    background: #ede6d9;
+    color: var(--ink);
+    padding: 7px 9px;
+    font-size: 11.5px;
+    border: 1px solid var(--line);
+  }
+  .desc-tab td {
+    padding: 7px 9px;
+    border: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .desc-tab .num {
+    width: 26px;
+    text-align: center;
+    font-weight: 800;
+    color: #fff;
+    background: var(--accent);
+  }
+  .desc-tab td.fid {
+    white-space: nowrap;
+    font-weight: 700;
+    color: var(--accent-dk);
+    width: 78px;
+  }
+
+  .phone {
+    width: 280px;
+    height: 580px;
+    background: #0e0f14;
+    border-radius: 38px;
+    padding: 11px;
+    box-shadow:
+      0 18px 40px rgba(40, 30, 15, 0.22),
+      inset 0 0 0 2px #2a2d36;
+    position: relative;
+    flex: none;
+  }
+  .phone.sm {
+    width: 200px;
+    height: 412px;
+    border-radius: 30px;
+    padding: 8px;
+  }
+  .scr {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 28px;
+    overflow: hidden;
+    background: radial-gradient(
+      120% 80% at 50% 0%,
+      #1d2030 0%,
+      var(--scr-bg) 60%
+    );
+    color: var(--scr-text);
+    display: flex;
+    flex-direction: column;
+  }
+  .phone.sm .scr {
+    border-radius: 22px;
+  }
+  .notch {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 18px;
+    background: #0e0f14;
+    border-radius: 0 0 12px 12px;
+    z-index: 30;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 14px 6px;
+    flex: none;
+  }
+  .nav .ttl {
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .nav .x {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--scr-surf);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--scr-mut);
+  }
+  .nav .back {
+    font-size: 15px;
+    color: var(--scr-mut);
+    width: 24px;
+  }
+  .modepill {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--liq1);
+    background: rgba(232, 185, 106, 0.12);
+    border: 1px solid rgba(232, 185, 106, 0.3);
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 6px 14px 16px;
+    position: relative;
+  }
+  .center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: center;
+  }
+  .hint {
+    font-size: 11px;
+    color: var(--scr-mut);
+  }
+  .big {
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+
+  .glass {
+    position: relative;
+    width: 74px;
+    height: 98px;
+    margin: 0 auto;
+    clip-path: polygon(15% 0, 85% 0, 77% 100%, 23% 100%);
+    background: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.14),
+      rgba(255, 255, 255, 0.03) 40%,
+      rgba(255, 255, 255, 0.1)
+    );
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.18);
+  }
+  .glass.flute {
+    width: 34px;
+    height: 120px;
+    clip-path: polygon(30% 0, 70% 0, 60% 100%, 40% 100%);
+  }
+  .glass.small {
+    width: 44px;
+    height: 58px;
+  }
+  .liquid {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, var(--liq1), var(--liq2));
+  }
+  .liquid::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+  }
+  .foam {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    height: 13px;
+    border-radius: 8px 8px 4px 4px;
+    background: linear-gradient(180deg, #fff, #f3ead6);
+  }
+  .stream {
+    position: absolute;
+    width: 6px;
+    background: linear-gradient(180deg, var(--liq1), var(--liq2));
+    border-radius: 3px;
+  }
+  .pressdot {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(232, 185, 106, 0.85);
+    box-shadow: 0 0 0 8px rgba(232, 185, 106, 0.2);
+  }
+  .ripple {
+    position: absolute;
+    width: 66px;
+    height: 66px;
+    border: 2px solid rgba(232, 185, 106, 0.5);
+    border-radius: 50%;
+  }
+  .ripple.r2 {
+    width: 98px;
+    height: 98px;
+    border-color: rgba(232, 185, 106, 0.26);
+  }
+  .speech {
+    background: var(--liq1);
+    color: #2a1c08;
+    font-weight: 800;
+    font-size: 13px;
+    padding: 5px 12px;
+    border-radius: 12px;
+  }
+  .mk {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+    z-index: 25;
+  }
+
+  .mcard {
+    width: 100%;
+    background: var(--scr-surf);
+    border: 1px solid var(--scr-line);
+    border-radius: 14px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    align-items: center;
+  }
+  .mcard .lab {
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .mcard .cap {
+    font-size: 10px;
+    color: var(--scr-mut);
+  }
+  .grid5 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    width: 100%;
+  }
+  .liqcard {
+    position: relative;
+    background: var(--scr-surf);
+    border: 1px solid var(--scr-line);
+    border-radius: 12px;
+    padding: 11px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .liqcard .nm {
+    font-size: 10.5px;
+    font-weight: 600;
+  }
+  .chambadge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 8px;
+    font-weight: 700;
+    color: #2a1c08;
+    background: var(--liq1);
+    padding: 1px 5px;
+    border-radius: 999px;
+  }
+  .btn {
+    width: 100%;
+    padding: 11px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .btn.primary {
+    background: linear-gradient(180deg, var(--liq1), var(--liq2));
+    color: #2a1c08;
+  }
+  .btn.ghost {
+    background: transparent;
+    border: 1.5px solid var(--scr-line);
+    color: var(--scr-text);
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: var(--scr-surf);
+    border: 1px solid var(--scr-line);
+    border-radius: 12px;
+    padding: 11px 13px;
+    font-size: 12px;
+  }
+  .toggle {
+    width: 36px;
+    height: 21px;
+    border-radius: 999px;
+    background: var(--liq2);
+    position: relative;
+    flex: none;
+  }
+  .toggle::after {
+    content: "";
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #fff;
+  }
+  .vib {
+    display: flex;
+    gap: 4px;
+    align-items: flex-end;
+    height: 18px;
+  }
+  .vib i {
+    width: 3px;
+    background: var(--liq1);
+    border-radius: 2px;
+    display: block;
+  }
+  .stat {
+    flex: 1;
+    background: var(--scr-surf);
+    border: 1px solid var(--scr-line);
+    border-radius: 12px;
+    padding: 11px;
+    text-align: center;
+  }
+  .stat .v {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--liq1);
+  }
+  .stat .k {
+    font-size: 9.5px;
+    color: var(--scr-mut);
+    margin-top: 2px;
+  }
+  .bignum {
+    font-size: 38px;
+    font-weight: 900;
+    color: var(--liq1);
+    line-height: 1;
+  }
+  .progress {
+    width: 80%;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--scr-surf);
+    overflow: hidden;
+  }
+  .progress i {
+    display: block;
+    height: 100%;
+    width: 62%;
+    background: linear-gradient(90deg, var(--liq1), var(--liq2));
+  }
+  .modal {
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 9, 12, 0.62);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    z-index: 20;
+  }
+  .sheet {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    background: var(--scr-surf);
+    border: 1px solid var(--scr-line);
+    border-radius: 16px;
+    padding: 12px;
+    z-index: 20;
+  }
+  .dialog {
+    width: 100%;
+    background: #20242e;
+    border: 1px solid var(--scr-line);
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+  }
+  .dialog .q {
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+  .dialog .btns {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .logo-k {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+  .burst {
+    position: absolute;
+    width: 3px;
+    height: 14px;
+    background: var(--liq1);
+    border-radius: 2px;
+  }
+  .cork {
+    position: absolute;
+    width: 14px;
+    height: 16px;
+    background: #7a5a2a;
+    border-radius: 4px;
+  }
+
+  .states {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 18px;
+  }
+  .state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .state .slabel {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--accent-dk);
+  }
+  .state .scap {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .arrow-h {
+    align-self: center;
+    color: var(--accent);
+    font-weight: 900;
+    font-size: 20px;
+    padding-top: 120px;
+  }
+
+  .note {
+    background: #fbf6ee;
+    border: 1px solid var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #5d4a30;
+    margin-top: 18px;
+  }
+  footer {
+    margin-top: 72px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12.5px;
+    text-align: center;
+  }
+
+  @media (max-width: 760px) {
+    .screen {
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+    .arrow-h {
+      display: none;
+    }
+  }
+</style>
+
+<div class="wrap">
+  <header class="cover">
+    <div class="eyebrow">음주 대체 인터랙션 앱 · Screen Design</div>
+    <h1>
+      <span class="glassmark"
+        ><svg width="40" height="52" viewBox="0 0 40 52">
+          <polygon
+            points="6,2 34,2 30,50 10,50"
+            fill="none"
+            stroke="#B5763A"
+            stroke-width="3"
+          />
+          <polygon
+            points="9,28 31,28 30,50 10,50"
+            fill="#B5763A"
+            opacity="0.85"
+          /></svg></span
+      >폰술
+    </h1>
+    <div class="sub">화면설계서 · Screen Design Document</div>
+    <div class="meta">
+      <div><b>버전</b><span>v0.2</span></div>
+      <div><b>플랫폼</b><span>앱인토스 (Toss 미니앱)</span></div>
+      <div><b>범위</b><span>1차 MVP 9개 화면</span></div>
+      <div><b>연계 문서</b><span>폰술 기능정의서 v0.2</span></div>
+    </div>
+  </header>
+
+  <!-- 1. IA -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-no">01</span>
+      <h2>정보구조 &amp; 화면 목록</h2>
+    </div>
+    <p class="lead">
+      핵심 동선은 <b>모드 선택 → 술 선택 → 음주 인터랙션(단일 화면)</b>이다.
+      음주 인터랙션 화면은 별도 화면으로 나누지 않고 한 화면 안에서
+      대기·따르기·마시기 상태가 순환한다.
+    </p>
+    <table class="t">
+      <tr>
+        <th style="width: 80px">화면 ID</th>
+        <th style="width: 170px">화면명</th>
+        <th>역할</th>
+        <th style="width: 140px">주요 기능</th>
+      </tr>
+      <tr>
+        <td class="id">S-01</td>
+        <td>스플래시 / 로딩</td>
+        <td>에셋 사전 로드, 브랜드·절제 메시지 노출</td>
+        <td>F-SY-07</td>
+      </tr>
+      <tr>
+        <td class="id">S-02</td>
+        <td>모드 선택 (첫 화면)</td>
+        <td>혼술 / 술자리 맥락 선택</td>
+        <td>F-MD-01~03</td>
+      </tr>
+      <tr>
+        <td class="id">S-03</td>
+        <td>술 선택</td>
+        <td>5종 선택(소주·맥주·와인·막걸리·샴페인)</td>
+        <td>F-CR-01</td>
+      </tr>
+      <tr>
+        <td class="id">S-04</td>
+        <td>음주 인터랙션</td>
+        <td>단일 화면 3상태: 대기 → 따르기 → 마시기 순환</td>
+        <td>F-CR-02·03·04</td>
+      </tr>
+      <tr>
+        <td class="id">S-05</td>
+        <td>샴페인 축하</td>
+        <td>샴페인 한정. 흔들어 코르크 펑 + 거품 분출</td>
+        <td>F-CR-05</td>
+      </tr>
+      <tr>
+        <td class="id">S-06</td>
+        <td>건배 요청</td>
+        <td>건배 링크 생성·공유</td>
+        <td>F-CH-01·02</td>
+      </tr>
+      <tr>
+        <td class="id">S-07</td>
+        <td>건배 수신</td>
+        <td>링크 진입 시 “짠” 연출</td>
+        <td>F-CH-03</td>
+      </tr>
+      <tr>
+        <td class="id">S-08</td>
+        <td>설정</td>
+        <td>사운드·진동 등 검수 필수 설정</td>
+        <td>F-SY-01·02</td>
+      </tr>
+      <tr>
+        <td class="id">S-09</td>
+        <td>종료 확인 모달</td>
+        <td>종료 시 확인(공통 컴포넌트)</td>
+        <td>F-SY-05·06</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- 2. FLOW -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-no">02</span>
+      <h2>화면 흐름도</h2>
+    </div>
+    <p class="lead">
+      메인 동선은 좌→우. S-04에 도착하면 한 화면 안에서 상태가 순환한다(아래
+      둘째 줄). 샴페인을 골랐다면 흔들기로 축하(S-05)가 분기됐다가 다시
+      돌아온다.
+    </p>
+    <div class="flow">
+      <div class="node">S-01<small>스플래시</small></div>
+      <span class="arrow">→</span>
+      <div class="node">S-02<small>모드 선택</small></div>
+      <span class="arrow">→</span>
+      <div class="node">S-03<small>술 선택</small></div>
+      <span class="arrow">→</span>
+      <div class="node">S-04<small>음주 인터랙션</small></div>
+    </div>
+    <div class="flow" style="margin-top: 14px">
+      <div class="node">대기<small>병만</small></div>
+      <span class="arrow">→</span>
+      <div class="node">따르기<small>길게 누름</small></div>
+      <span class="arrow">→</span>
+      <div class="node">마시기<small>떼고 탭</small></div>
+      <span class="arrow">↺</span>
+      <div class="node loop">대기<small>비움 후 복귀</small></div>
+      <span class="arrow">·</span>
+      <div class="node cham">S-05<small>샴페인 흔들기</small></div>
+    </div>
+    <div class="flow" style="margin-top: 14px">
+      <div class="node">S-02 · S-04</div>
+      <span class="arrow">→</span>
+      <div class="node">S-06<small>건배 요청</small></div>
+      <span class="arrow">→</span>
+      <div class="node">공유 링크</div>
+      <span class="arrow">→</span>
+      <div class="node">S-07<small>건배 수신(상대)</small></div>
+      <span class="arrow">→</span>
+      <div class="node">S-04<small>함께</small></div>
+    </div>
+    <p class="flow-note">
+      · 보조 동선: 어느 메인 화면에서도 <b>S-08 설정</b> 접근. &nbsp; · 우측
+      상단 닫기(X) → <b>S-09 종료 확인 모달</b>.
+    </p>
+  </section>
+
+  <!-- 3. SCREENS -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-no">03</span>
+      <h2>화면별 설계</h2>
+    </div>
+    <p class="lead">
+      각 화면은 와이어프레임(중간 충실도)과 번호로 매핑된 영역 디스크립션으로
+      정의한다. 색·연출은 방향성 표현이며 최종 비주얼은 디자인 단계에서
+      확정한다.
+    </p>
+
+    <!-- S-01 -->
+    <div class="screen">
+      <div class="phone">
+        <div class="scr">
+          <div class="notch"></div>
+          <div class="body" style="padding-top: 40px">
+            <div class="center">
+              <svg viewBox="0 0 40 52" style="width: 46px; height: 60px">
+                <polygon
+                  points="6,2 34,2 30,50 10,50"
+                  fill="none"
+                  stroke="#E8B96A"
+                  stroke-width="3"
+                />
+                <polygon points="9,30 31,30 30,50 10,50" fill="#E8B96A" />
+              </svg>
+              <div class="logo-k">폰술</div>
+              <div class="hint" style="font-size: 12px">
+                마시지 않고, 분위기만
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                padding-bottom: 20px;
+              "
+            >
+              <div class="progress"><i></i></div>
+              <div class="hint">준비 중… (첫 화면 10초 이내)</div>
+            </div>
+            <div class="mk" style="left: 96px; top: 90px">1</div>
+            <div class="mk" style="left: 174px; top: 150px">2</div>
+            <div class="mk" style="right: 30px; bottom: 48px">3</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-meta">
+        <div class="sid">S-01</div>
+        <h3>스플래시 / 로딩</h3>
+        <div class="path">
+          <b>진입:</b> 앱 최초 실행 &nbsp;|&nbsp; <b>다음:</b> S-02
+        </div>
+        <div class="desc-tab">
+          <table>
+            <tr>
+              <th class="num"></th>
+              <th>영역</th>
+              <th>기능 ID</th>
+              <th>디스크립션</th>
+            </tr>
+            <tr>
+              <td class="num">1</td>
+              <td>브랜드 로고</td>
+              <td class="fid">—</td>
+              <td>잔 모티프 + ‘폰술’ 로고</td>
+            </tr>
+            <tr>
+              <td class="num">2</td>
+              <td>절제 슬로건</td>
+              <td class="fid">—</td>
+              <td>“마시지 않고, 분위기만” 고정 노출(정책 톤)</td>
+            </tr>
+            <tr>
+              <td class="num">3</td>
+              <td>로딩 진행</td>
+              <td class="fid">F-SY-07</td>
+              <td>에셋 사전 로드, 첫 화면 10초 이내</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- S-02 -->
+    <div class="screen">
+      <div class="phone">
+        <div class="scr">
+          <div class="notch"></div>
+          <div class="nav">
+            <span class="back">≡</span><span class="ttl">오늘은 어떻게?</span
+            ><span class="x">✕</span>
+          </div>
+          <div class="body">
+            <div
+              class="center"
+              style="justify-content: flex-start; gap: 14px; padding-top: 12px"
+            >
+              <div class="mcard">
+                <svg viewBox="0 0 24 24" style="width: 32px; height: 32px">
+                  <path
+                    fill="none"
+                    stroke="#E8B96A"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M20 14a8 8 0 1 1-9.9-7.8A6 6 0 0 0 20 14z"
+                  />
+                </svg>
+                <div class="lab">혼술 모드</div>
+                <div class="cap">잔잔한 BGM · 천천히 음미</div>
+              </div>
+              <div class="mcard">
+                <svg viewBox="0 0 24 24" style="width: 32px; height: 32px">
+                  <path
+                    fill="none"
+                    stroke="#E8B96A"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M7 4l2 9M17 4l-2 9M9 13h6l-1 7h-4z"
+                  />
+                </svg>
+                <div class="lab">술자리 모드</div>
+                <div class="cap">활기찬 분위기 · 빠른 원샷</div>
+              </div>
+              <div class="hint">언제든 설정에서 바꿀 수 있어요</div>
+            </div>
+            <div class="mk" style="left: 28px; top: 120px">1</div>
+            <div class="mk" style="left: 28px; top: 238px">2</div>
+            <div class="mk" style="right: 26px; top: 44px">3</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-meta">
+        <div class="sid">S-02</div>
+        <h3>모드 선택 (첫 화면)</h3>
+        <div class="path">
+          <b>진입:</b> S-01 이후 &nbsp;|&nbsp; <b>다음:</b> S-03
+        </div>
+        <div class="desc-tab">
+          <table>
+            <tr>
+              <th class="num"></th>
+              <th>영역</th>
+              <th>기능 ID</th>
+              <th>디스크립션</th>
+            </tr>
+            <tr>
+              <td class="num">1</td>
+              <td>혼술 모드 카드</td>
+              <td class="fid">F-MD-02</td>
+              <td>차분한 프리셋(느린 연출·잔잔한 BGM) 적용 후 S-03</td>
+            </tr>
+            <tr>
+              <td class="num">2</td>
+              <td>술자리 모드 카드</td>
+              <td class="fid">F-MD-03</td>
+              <td>활기찬 프리셋(빠른 원샷) 적용 후 S-03</td>
+            </tr>
+            <tr>
+              <td class="num">3</td>
+              <td>닫기 버튼</td>
+              <td class="fid">F-SY-06</td>
+              <td>우측 상단 닫기 → S-09 종료 확인</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- S-03 -->
+    <div class="screen">
+      <div class="phone">
+        <div class="scr">
+          <div class="notch"></div>
+          <div class="nav">
+            <span class="back">‹</span><span class="ttl">무엇을 따라볼까요</span
+            ><span class="x">✕</span>
+          </div>
+          <div class="body">
+            <div class="grid5" style="margin-top: 8px">
+              <div class="liqcard">
+                <div class="glass small">
+                  <div
+                    class="liquid"
+                    style="height: 55%; --liq1: #efe9da; --liq2: #d9d0bc"
+                  ></div>
+                </div>
+                <div class="nm">소주</div>
+              </div>
+              <div class="liqcard">
+                <div class="glass small">
+                  <div class="liquid" style="height: 60%"></div>
+                  <div class="foam" style="bottom: 60%"></div>
+                </div>
+                <div class="nm">맥주</div>
+              </div>
+              <div class="liqcard">
+                <div class="glass small">
+                  <div
+                    class="liquid"
+                    style="height: 50%; --liq1: #9b3050; --liq2: #6e1f3a"
+                  ></div>
+                </div>
+                <div class="nm">와인</div>
+              </div>
+              <div class="liqcard">
+                <div class="glass small">
+                  <div
+                    class="liquid"
+                    style="height: 58%; --liq1: #f4efe6; --liq2: #e3dccb"
+                  ></div>
+                </div>
+                <div class="nm">막걸리</div>
+              </div>
+              <div class="liqcard" style="grid-column: span 2">
+                <span class="chambadge">축하 연출</span>
+                <div class="glass flute" style="height: 52px; width: 26px">
+                  <div
+                    class="liquid"
+                    style="height: 65%; --liq1: #f2d89a; --liq2: #d9b65e"
+                  ></div>
+                </div>
+                <div class="nm">샴페인</div>
+              </div>
+            </div>
+            <div class="hint" style="text-align: center; margin-top: 12px">
+              종류별로 병·잔·색·소리·점도가 달라요
+            </div>
+            <div class="mk" style="left: 28px; top: 102px">1</div>
+            <div class="mk" style="right: 30px; bottom: 96px">2</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-meta">
+        <div class="sid">S-03</div>
+        <h3>술 선택</h3>
+        <div class="path">
+          <b>진입:</b> S-02 &nbsp;|&nbsp; <b>다음:</b> S-04
+        </div>
+        <div class="desc-tab">
+          <table>
+            <tr>
+              <th class="num"></th>
+              <th>영역</th>
+              <th>기능 ID</th>
+              <th>디스크립션</th>
+            </tr>
+            <tr>
+              <td class="num">1</td>
+              <td>술 카드 그리드</td>
+              <td class="fid">F-CR-01</td>
+              <td>
+                5종. 소주·맥주·와인·막걸리는 동일 따르기/마시기 엔진(외형만
+                차등). 브랜드 실명·로고 미사용
+              </td>
+            </tr>
+            <tr>
+              <td class="num">2</td>
+              <td>샴페인 카드</td>
+              <td class="fid">F-CR-01·05</td>
+              <td>
+                동일 엔진 + 흔들어 터뜨리는 축하 연출(S-05) 추가. ‘축하 연출’
+                배지로 구분
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- S-04 : single screen, 3 states -->
+    <div class="screen wide">
+      <div class="screen-meta" style="margin-bottom: 6px">
+        <div class="sid">S-04</div>
+        <h3>음주 인터랙션 — 단일 화면 3상태</h3>
+        <div class="path">
+          <b>진입:</b> S-03 / S-07 함께하기 &nbsp;|&nbsp; <b>구조:</b> 화면 전환
+          없이 같은 화면에서 상태만 바뀜
+        </div>
+      </div>
+      <div class="states">
+        <!-- 대기 -->
+        <div class="state">
+          <div class="phone sm">
+            <div class="scr">
+              <div class="notch"></div>
+              <div class="nav">
+                <span class="back">‹</span><span class="ttl">소주</span
+                ><span class="x">✕</span>
+              </div>
+              <div class="body">
+                <div class="center">
+                  <svg viewBox="0 0 48 116" style="width: 46px; height: 112px">
+                    <rect
+                      x="18"
+                      y="3"
+                      width="12"
+                      height="9"
+                      rx="2"
+                      fill="#5a7a3a"
+                    />
+                    <rect
+                      x="19"
+                      y="12"
+                      width="10"
+                      height="22"
+                      fill="rgba(255,255,255,.12)"
+                    />
+                    <rect
+                      x="8"
+                      y="32"
+                      width="32"
+                      height="80"
+                      rx="10"
+                      fill="rgba(255,255,255,.10)"
+                      stroke="rgba(255,255,255,.3)"
+                    />
+                    <rect
+                      x="10"
+                      y="66"
+                      width="28"
+                      height="44"
+                      rx="8"
+                      fill="#9DBE6E"
+                      opacity="0.55"
+                    />
+                  </svg>
+                  <div class="big">길게 눌러 따르기</div>
+                  <div class="hint">화면을 누르면 따라져요</div>
+                </div>
+                <div class="mk" style="left: 78px; top: 150px">1</div>
+              </div>
+            </div>
+          </div>
+          <div class="slabel">① 대기</div>
+          <div class="scap">병만 보임</div>
+        </div>
+
+        <div class="arrow-h">→</div>
+
+        <!-- 따르기 -->
+        <div class="state">
+          <div class="phone sm">
+            <div class="scr">
+              <div class="notch"></div>
+              <div class="nav">
+                <span class="back">‹</span><span class="ttl">소주</span
+                ><span class="x">✕</span>
+              </div>
+              <div class="body">
+                <div
+                  class="center"
+                  style="
+                    gap: 0;
+                    justify-content: flex-start;
+                    padding-top: 14px;
+                    position: relative;
+                  "
+                >
+                  <svg viewBox="0 0 60 70" style="width: 62px; height: 72px">
+                    <polygon
+                      points="10,18 38,46 46,40 22,12"
+                      fill="rgba(255,255,255,.12)"
+                      stroke="rgba(255,255,255,.3)"
+                    />
+                    <rect
+                      x="6"
+                      y="10"
+                      width="9"
+                      height="8"
+                      rx="2"
+                      transform="rotate(-38 10 14)"
+                      fill="#5a7a3a"
+                    />
+                  </svg>
+                  <div
+                    class="stream"
+                    style="
+                      height: 70px;
+                      top: 62px;
+                      left: 50%;
+                      margin-left: 14px;
+                    "
+                  ></div>
+                  <div class="glass" style="margin-top: 34px">
+                    <div
+                      class="liquid"
+                      style="height: 46%; --liq1: #efe9da; --liq2: #d9d0bc"
+                    ></div>
+                  </div>
+                  <div class="pressdot" style="bottom: 96px; left: 60px"></div>
+                </div>
+                <div class="hint" style="text-align: center">
+                  누르는 동안 차오름
+                </div>
+                <div class="mk" style="left: 18px; top: 60px">2</div>
+                <div class="mk" style="right: 40px; top: 92px">3</div>
+                <div class="mk" style="left: 104px; bottom: 96px">4</div>
+              </div>
+            </div>
+          </div>
+          <div class="slabel">② 따르는 중</div>
+          <div class="scap">병+줄기+잔</div>
+        </div>
+
+        <div class="arrow-h">→</div>
+
+        <!-- 마시기 -->
+        <div class="state">
+          <div class="phone sm">
+            <div class="scr">
+              <div class="notch"></div>
+              <div class="nav">
+                <span class="back">‹</span><span class="ttl">소주</span
+                ><span class="x">✕</span>
+              </div>
+              <div class="body">
+                <div class="center">
+                  <div style="position: relative">
+                    <div class="glass">
+                      <div
+                        class="liquid"
+                        style="height: 16%; --liq1: #efe9da; --liq2: #d9d0bc"
+                      ></div>
+                    </div>
+                    <div class="ripple r2" style="left: -13px; top: 0"></div>
+                    <div class="ripple" style="left: 3px; top: 16px"></div>
+                    <div
+                      class="speech"
+                      style="position: absolute; left: 56px; top: -6px"
+                    >
+                      캬~
+                    </div>
+                  </div>
+                  <div class="big">탭해서 비우기</div>
+                </div>
+                <div class="btn ghost">다시 따르기</div>
+                <div class="mk" style="left: 96px; top: 150px">5</div>
+                <div class="mk" style="right: 50px; top: 110px">6</div>
+                <div class="mk" style="left: 28px; bottom: 54px">7</div>
+              </div>
+            </div>
+          </div>
+          <div class="slabel">③ 마시기</div>
+          <div class="scap">잔만 → 비우면 ①로</div>
+        </div>
+      </div>
+
+      <div class="desc-tab" style="margin-top: 22px">
+        <table>
+          <tr>
+            <th class="num"></th>
+            <th style="width: 130px">영역 / 동작</th>
+            <th>기능 ID</th>
+            <th>디스크립션</th>
+          </tr>
+          <tr>
+            <td class="num">1</td>
+            <td>병 (대기·롱프레스)</td>
+            <td class="fid">F-CR-02</td>
+            <td>대기 상태엔 병만 중앙. 화면 길게 누르면 따르기 시작</td>
+          </tr>
+          <tr>
+            <td class="num">2</td>
+            <td>병 기울임</td>
+            <td class="fid">F-CR-02</td>
+            <td>누르는 동안 병이 기울며 줄기를 흘림(소진되는 자원 아님)</td>
+          </tr>
+          <tr>
+            <td class="num">3</td>
+            <td>술줄기</td>
+            <td class="fid">F-CR-02</td>
+            <td>병→잔을 잇는 흐름. 종류별 색·굵기·소리 차등</td>
+          </tr>
+          <tr>
+            <td class="num">4</td>
+            <td>잔 차오름</td>
+            <td class="fid">F-CR-02</td>
+            <td>누름 시간 = 차오름(0~100%). 가득 차면 정지(넘침 없음)</td>
+          </tr>
+          <tr>
+            <td class="num">5</td>
+            <td>잔 탭(마시기)</td>
+            <td class="fid">F-CR-03</td>
+            <td>떼면 잔만 남음. 탭마다 꿀꺽 소리·진동 + 액체 감소</td>
+          </tr>
+          <tr>
+            <td class="num">6</td>
+            <td>비움 연출</td>
+            <td class="fid">F-CR-03</td>
+            <td>다 비우면 “캬~” + 빈 잔</td>
+          </tr>
+          <tr>
+            <td class="num">7</td>
+            <td>다시 따르기 / 순환</td>
+            <td class="fid">F-CR-04</td>
+            <td>
+              비움 후 ①대기로 복귀(무한 반복). 헛누름(거의 안 따름)은 마시기
+              없이 ①로 복귀
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="note">
+        한 화면 안의 상태 전환이므로 라우트는 하나다. 전환은 요소의
+        등장/퇴장(병↑ 페이드아웃, 잔↑ 페이드인)으로 처리해 끊김을 줄인다. 손
+        떼는 시점 잔 수위가 임계값(예: 8%) 미만이면 마시기로 가지 않고 대기로
+        돌아간다.
+      </div>
+    </div>
+
+    <!-- S-05 champagne -->
+    <div class="screen">
+      <div class="phone">
+        <div class="scr">
+          <div class="notch"></div>
+          <div class="nav">
+            <span class="back">‹</span><span class="ttl">샴페인</span
+            ><span class="x">✕</span>
+          </div>
+          <div class="body">
+            <div class="center" style="position: relative">
+              <div
+                style="
+                  position: relative;
+                  height: 150px;
+                  display: flex;
+                  align-items: flex-end;
+                  justify-content: center;
+                "
+              >
+                <div
+                  class="cork"
+                  style="left: 50%; margin-left: -7px; top: 0"
+                ></div>
+                <div
+                  class="burst"
+                  style="left: 40%; top: 18px; transform: rotate(-30deg)"
+                ></div>
+                <div
+                  class="burst"
+                  style="left: 60%; top: 18px; transform: rotate(30deg)"
+                ></div>
+                <div class="burst" style="left: 50%; top: 10px"></div>
+                <svg viewBox="0 0 40 96" style="width: 40px; height: 96px">
+                  <rect
+                    x="14"
+                    y="20"
+                    width="12"
+                    height="20"
+                    fill="rgba(255,255,255,.12)"
+                  />
+                  <rect
+                    x="7"
+                    y="38"
+                    width="26"
+                    height="56"
+                    rx="9"
+                    fill="#2c3a22"
+                    stroke="rgba(255,255,255,.25)"
+                  />
+                  <rect
+                    x="9"
+                    y="58"
+                    width="22"
+                    height="34"
+                    rx="7"
+                    fill="#D9B65E"
+                    opacity="0.5"
+                  />
+                </svg>
+                <div
+                  style="
+                    position: absolute;
+                    top: 30px;
+                    left: 0;
+                    right: 0;
+                    display: flex;
+                    justify-content: center;
+                    gap: 6px;
+                  "
+                >
+                  <span
+                    style="
+                      width: 5px;
+                      height: 5px;
+                      border-radius: 50%;
+                      background: #f2d89a;
+                    "
+                  ></span>
+                  <span
+                    style="
+                      width: 4px;
+                      height: 4px;
+                      border-radius: 50%;
+                      background: #f2d89a;
+                    "
+                  ></span>
+                  <span
+                    style="
+                      width: 6px;
+                      height: 6px;
+                      border-radius: 50%;
+                      background: #f2d89a;
+                    "
+                  ></span>
+                </div>
+              </div>
+              <div class="speech" style="font-size: 16px">팡!</div>
+              <div class="big">흔들어서 터뜨리기</div>
+              <div class="hint">폰을 흔들면 코르크가 ‘펑’ · 축하해요</div>
+              <div class="vib">
+                <i style="height: 7px"></i><i style="height: 15px"></i
+                ><i style="height: 19px"></i><i style="height: 11px"></i
+                ><i style="height: 6px"></i>
+              </div>
+            </div>
+            <div class="mk" style="left: 96px; top: 78px">1</div>
+            <div class="mk" style="left: 96px; top: 200px">2</div>
+            <div class="mk" style="right: 64px; bottom: 90px">3</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-meta">
+        <div class="sid">S-05</div>
+        <h3>샴페인 축하 (흔들어 터뜨리기)</h3>
+        <div class="path">
+          <b>진입:</b> S-04에서 샴페인 선택 상태 &nbsp;|&nbsp; <b>다음:</b> S-04
+          일반 흐름 복귀
+        </div>
+        <div class="desc-tab">
+          <table>
+            <tr>
+              <th class="num"></th>
+              <th>영역</th>
+              <th>기능 ID</th>
+              <th>디스크립션</th>
+            </tr>
+            <tr>
+              <td class="num">1</td>
+              <td>코르크 펑·거품 분출</td>
+              <td class="fid">F-CR-05</td>
+              <td>
+                흔들기(셰이크) 감지 시 코르크 펑 + 거품 분출 축하 애니메이션
+              </td>
+            </tr>
+            <tr>
+              <td class="num">2</td>
+              <td>흔들기 안내</td>
+              <td class="fid">F-CR-05</td>
+              <td>가속도 센서 기반. 임계값·쿨다운으로 오작동 방지</td>
+            </tr>
+            <tr>
+              <td class="num">3</td>
+              <td>축하 피드백</td>
+              <td class="fid">F-CR-05</td>
+              <td>
+                강한 햅틱 + 효과음(설정·무음 모드 종속). 폭발 미화로 읽히지 않게
+                표현 관리
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- S-06 -->
+    <div class="screen">
+      <div class="phone">
+        <div class="scr">
+          <div class="notch"></div>
+          <div class="nav">
+            <span class="back">‹</span><span class="ttl">건배하기</span
+            ><span class="x">✕</span>
+          </div>
+          <div class="body">
+            <div class="center">
+              <div style="display: flex; gap: 6px; align-items: flex-end">
+                <div class="glass small" style="transform: rotate(-12deg)">
+                  <div class="liquid" style="height: 55%"></div>
+                </div>
+                <div class="glass small" style="transform: rotate(12deg)">
+                  <div class="liquid" style="height: 55%"></div>
+                </div>
+              </div>
+              <div class="big">멀리 있는 친구와 짠</div>
+              <div class="hint">링크를 보내면, 친구가 열 때 양쪽에서 ‘짠’</div>
+              <div class="btn primary">건배 링크 만들기</div>
+            </div>
+            <div class="sheet">
+              <div class="hint" style="margin-bottom: 8px">공유</div>
+              <div style="display: flex; gap: 8px">
+                <div class="liqcard" style="flex: 1; padding: 7px">
+                  <div class="nm">메시지</div>
+                </div>
+                <div class="liqcard" style="flex: 1; padding: 7px">
+                  <div class="nm">링크 복사</div>
+                </div>
+                <div class="liqcard" style="flex: 1; padding: 7px">
+                  <div class="nm">더보기</div>
+                </div>
+              </div>
+            </div>
+            <div class="mk" style="left: 58px; top: 228px">1</div>
+            <div class="mk" style="right: 26px; bottom: 114px">2</div>
+            <div class="mk" style="left: 28px; top: 194px">3</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-meta">
+        <div class="sid">S-06</div>
+        <h3>건배 요청</h3>
+        <div class="path">
+          <b>진입:</b> S-02 / S-04 &nbsp;|&nbsp; <b>다음:</b> 공유 링크 → 상대
+          S-07
+        </div>
+        <div class="desc-tab">
+          <table>
+            <tr>
+              <th class="num"></th>
+              <th>영역</th>
+              <th>기능 ID</th>
+              <th>디스크립션</th>
+            </tr>
+            <tr>
+              <td class="num">1</td>
+              <td>건배 링크 만들기</td>
+              <td class="fid">F-CH-01</td>
+              <td>getTossShareLink로 건배 세션 링크 생성(개인정보 비포함)</td>
+            </tr>
+            <tr>
+              <td class="num">2</td>
+              <td>공유 시트</td>
+              <td class="fid">F-CH-02</td>
+              <td>share 호출 → 공유 시트로 전달. 실패 시 재시도 안내</td>
+            </tr>
+            <tr>
+              <td class="num">3</td>
+              <td>비동기 안내</td>
+              <td class="fid">F-CH-03</td>
+              <td>실시간 동시성이 아닌 링크 매개 방식 안내</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- S-07 -->
+    <div class="screen">
+      <div class="phone">
+        <div class="scr">
+          <div class="notch"></div>
+          <div class="nav">
+            <span class="back"> </span><span class="ttl">건배 도착</span
+            ><span class="x">✕</span>
+          </div>
+          <div class="body">
+            <div class="center">
+              <div
+                style="
+                  position: relative;
+                  display: flex;
+                  gap: 2px;
+                  align-items: flex-end;
+                "
+              >
+                <div class="glass small" style="transform: rotate(-16deg)">
+                  <div class="liquid" style="height: 55%"></div>
+                </div>
+                <div class="glass small" style="transform: rotate(16deg)">
+                  <div class="liquid" style="height: 55%"></div>
+                </div>
+                <div class="ripple" style="left: 16px; top: -6px"></div>
+              </div>
+              <div class="speech" style="font-size: 16px">짠!</div>
+              <div class="big">친구가 건배를 보냈어요</div>
+              <div class="vib">
+                <i style="height: 8px"></i><i style="height: 16px"></i
+                ><i style="height: 20px"></i><i style="height: 12px"></i
+                ><i style="height: 6px"></i>
+              </div>
+              <div class="btn primary">함께하기</div>
+            </div>
+            <div class="mk" style="left: 96px; top: 158px">1</div>
+            <div class="mk" style="right: 52px; bottom: 92px">2</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-meta">
+        <div class="sid">S-07</div>
+        <h3>건배 수신</h3>
+        <div class="path">
+          <b>진입:</b> 공유 링크 클릭(상대) &nbsp;|&nbsp; <b>다음:</b> S-04
+        </div>
+        <div class="desc-tab">
+          <table>
+            <tr>
+              <th class="num"></th>
+              <th>영역</th>
+              <th>기능 ID</th>
+              <th>디스크립션</th>
+            </tr>
+            <tr>
+              <td class="num">1</td>
+              <td>“짠” 연출</td>
+              <td class="fid">F-CH-03</td>
+              <td>링크 진입 시 잔 부딪힘 + 소리·진동(설정·무음 종속)</td>
+            </tr>
+            <tr>
+              <td class="num">2</td>
+              <td>함께하기</td>
+              <td class="fid">F-CR-02</td>
+              <td>연출 후 S-04로 진입해 같이 따르기로 연결</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- S-08 (설정) -->
+    <div class="screen">
+      <div class="phone">
+        <div class="scr">
+          <div class="notch"></div>
+          <div class="nav">
+            <span class="back">‹</span><span class="ttl">설정</span
+            ><span class="x">✕</span>
+          </div>
+          <div class="body">
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 11px;
+                margin-top: 10px;
+              "
+            >
+              <div class="row">
+                <span>사운드</span><span class="toggle"></span>
+              </div>
+              <div class="row">
+                <span>진동(햅틱)</span><span class="toggle"></span>
+              </div>
+              <div class="row" style="opacity: 0.7">
+                <span>무음 모드 존중</span><span class="hint">자동</span>
+              </div>
+              <div class="row" style="opacity: 0.7">
+                <span>백그라운드 사운드 정지</span
+                ><span class="hint">자동</span>
+              </div>
+              <div class="row">
+                <span>모드 변경</span><span class="hint">술자리 ›</span>
+              </div>
+            </div>
+            <div class="hint" style="margin-top: 14px; line-height: 1.5">
+              진동을 꺼도 화면·소리로 동작을 알 수 있어요
+            </div>
+            <div class="mk" style="right: 50px; top: 94px">1</div>
+            <div class="mk" style="right: 50px; top: 140px">2</div>
+            <div class="mk" style="left: 28px; bottom: 62px">3</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-meta">
+        <div class="sid">S-08</div>
+        <h3>설정</h3>
+        <div class="path">
+          <b>진입:</b> 홈/헤더 &nbsp;|&nbsp; <b>비고:</b> 검수 필수 항목 집결
+        </div>
+        <div class="desc-tab">
+          <table>
+            <tr>
+              <th class="num"></th>
+              <th>영역</th>
+              <th>기능 ID</th>
+              <th>디스크립션</th>
+            </tr>
+            <tr>
+              <td class="num">1</td>
+              <td>사운드 토글</td>
+              <td class="fid">F-SY-01</td>
+              <td>사운드 On/Off. 설정 지속</td>
+            </tr>
+            <tr>
+              <td class="num">2</td>
+              <td>진동 토글</td>
+              <td class="fid">F-SY-02</td>
+              <td>진동 On/Off. 꺼도 시청각 피드백 유지(접근성)</td>
+            </tr>
+            <tr>
+              <td class="num">3</td>
+              <td>접근성 안내</td>
+              <td class="fid">F-SY-02</td>
+              <td>단일 감각 의존 금지 — 다중 감각 피드백</td>
+            </tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top: 14px">
+          무음 모드 존중(F-SY-03)과 백그라운드 사운드 정지(F-SY-04)는 사용자
+          설정이 아닌 <b>시스템 자동 동작</b>으로 항상 적용된다.
+        </div>
+      </div>
+    </div>
+
+    <!-- S-09 (종료 모달) -->
+    <div class="screen">
+      <div class="phone">
+        <div class="scr">
+          <div class="notch"></div>
+          <div class="nav">
+            <span class="back">‹</span><span class="ttl">소주</span
+            ><span class="x">✕</span>
+          </div>
+          <div class="body" style="filter: saturate(0.6)">
+            <div class="center">
+              <div class="glass">
+                <div
+                  class="liquid"
+                  style="height: 40%; --liq1: #efe9da; --liq2: #d9d0bc"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal">
+            <div class="dialog">
+              <div class="q">폰술을 종료할까요?</div>
+              <div class="hint" style="margin-top: 6px">
+                언제든 다시 따라줄게요
+              </div>
+              <div class="btns">
+                <div class="btn ghost" style="flex: 1">취소</div>
+                <div class="btn primary" style="flex: 1">종료</div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mk"
+            style="left: 50%; top: 238px; transform: translateX(-50%)"
+          >
+            1
+          </div>
+          <div class="mk" style="right: 26px; top: 44px">2</div>
+        </div>
+      </div>
+      <div class="screen-meta">
+        <div class="sid">S-09</div>
+        <h3>종료 확인 모달 (공통)</h3>
+        <div class="path">
+          <b>호출:</b> 모든 화면 우측 상단 닫기(X) &nbsp;|&nbsp;
+          <b>유형:</b> 오버레이
+        </div>
+        <div class="desc-tab">
+          <table>
+            <tr>
+              <th class="num"></th>
+              <th>영역</th>
+              <th>기능 ID</th>
+              <th>디스크립션</th>
+            </tr>
+            <tr>
+              <td class="num">1</td>
+              <td>종료 확인 모달</td>
+              <td class="fid">F-SY-05</td>
+              <td>실수 종료 방지. ‘취소’ 시 복귀, ‘종료’ 시 앱 종료</td>
+            </tr>
+            <tr>
+              <td class="num">2</td>
+              <td>닫기 트리거</td>
+              <td class="fid">F-SY-06</td>
+              <td>우측 상단 닫기(X)는 항상 접근 가능</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. COMMON UI -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-no">04</span>
+      <h2>공통 UI 규칙</h2>
+    </div>
+    <p class="lead">
+      모든 화면에 일관 적용되는 규칙이다. 검수 통과와 사용성 일관성을 위한
+      기준선이다.
+    </p>
+    <table class="t">
+      <tr>
+        <th style="width: 160px">항목</th>
+        <th>규칙</th>
+        <th style="width: 130px">관련 기능</th>
+      </tr>
+      <tr>
+        <td>헤더</td>
+        <td>좌측 뒤로/홈, 가운데 화면명, <b>우측 상단 닫기(X)</b> 상시 노출</td>
+        <td>F-SY-06</td>
+      </tr>
+      <tr>
+        <td>종료 처리</td>
+        <td>닫기/뒤로로 앱을 벗어날 때 종료 확인 모달(S-09)을 거친다</td>
+        <td>F-SY-05</td>
+      </tr>
+      <tr>
+        <td>상태 전환</td>
+        <td>
+          S-04는 한 화면 내 상태 전환. 요소 등장/퇴장으로 처리하고 라우트는
+          하나로 유지
+        </td>
+        <td>F-CR-02·03·04</td>
+      </tr>
+      <tr>
+        <td>피드백 원칙</td>
+        <td>
+          모든 동작은 <b>시각 + 청각 + 촉각</b> 중 둘 이상으로 전달.
+          진동/사운드를 꺼도 동작 인지 가능
+        </td>
+        <td>F-SY-01·02</td>
+      </tr>
+      <tr>
+        <td>사운드 정책</td>
+        <td>
+          무음 모드 시 자동 억제, 백그라운드 전환 시 즉시 정지·복귀 시
+          재생(시스템 자동)
+        </td>
+        <td>F-SY-03·04</td>
+      </tr>
+      <tr>
+        <td>성능</td>
+        <td>첫 화면 10초 이내, 인터랙션 반응 2초 이내. 에셋 사전 로드</td>
+        <td>F-SY-07·08</td>
+      </tr>
+      <tr>
+        <td>표현 가이드</td>
+        <td>
+          음주 미화·폭음 조장 금지, 술 브랜드 실명·로고 미사용. 샴페인 축하도
+          폭발 미화로 읽히지 않게
+        </td>
+        <td>F-CR-01·05</td>
+      </tr>
+      <tr>
+        <td>비게임 유지</td>
+        <td>
+          점수·레벨·랭킹·엔딩 없음. 핵심 루프는 대기↔따르기↔마시기 무한 반복
+        </td>
+        <td>F-CR-04</td>
+      </tr>
+    </table>
+    <div class="note">
+      본 화면설계서는 기능정의서 v0.2와 1:1로 매핑된다. 검수 게이트에서 기능 ID
+      기준 교차 점검할 것. 색·연출·아이콘은 방향성 표현이며 비주얼 디자인
+      단계에서 확정한다.
+    </div>
+  </section>
+
+  <footer>
+    폰술 화면설계서 · v0.2 · 앱인토스 1차 MVP · 연계: 폰술 기능정의서 v0.2
+  </footer>
+</div>

@@ -23,11 +23,15 @@ export default function DrinkSelect() {
           {DRINKS.map((d) => (
             <button key={d.key} className="drink-card" onClick={() => pick(d.key)}>
               {d.celebrate && <span className="badge">축하 연출</span>}
-              {/* 종류별 색·거품 차등 미리보기(F-CR-01). 가상 일반명칭만. */}
-              <span className="drink-swatch">
-                <span className="swatch-liquid" style={{ background: `linear-gradient(180deg, ${d.colors[0]}, ${d.colors[1]})` }} />
-                {d.foam && <span className="swatch-foam" />}
-              </span>
+              {/* 술 선택은 '병' 이미지로 표시(어떤 술을 고르는지). 없으면 CSS 색 스와치 폴백. F-CR-01. */}
+              {d.bottle ? (
+                <img className="drink-thumb" src={d.bottle} alt="" draggable={false} />
+              ) : (
+                <span className="drink-swatch">
+                  <span className="swatch-liquid" style={{ background: `linear-gradient(180deg, ${d.colors[0]}, ${d.colors[1]})` }} />
+                  {d.foam && <span className="swatch-foam" />}
+                </span>
+              )}
               <span className="drink-name">{d.label}</span>
               <span className="drink-visc">점도 {d.viscosity}</span>
             </button>

@@ -35,6 +35,7 @@ body {
 }
 
 .logo { font-size: 40px; font-weight: 900; }
+.logo-img { width: 120px; height: auto; object-fit: contain; }
 .slogan { color: var(--mut); margin: 4px 0 20px; }
 
 .btn {
@@ -60,6 +61,7 @@ body {
 }
 .drink-name { font-weight: 600; }
 .drink-visc { font-size: 10px; color: var(--mut); }
+.drink-thumb { width: 44px; height: 56px; object-fit: contain; }
 /* 종류별 색·거품 미리보기(CSS 플레이스홀더 — REVIEW(에셋 일관성)) */
 .drink-swatch {
   position: relative; width: 30px; height: 42px; overflow: hidden;
@@ -74,7 +76,6 @@ body {
   color: #2a1c08; background: var(--accent); padding: 1px 6px; border-radius: 999px;
 }
 .card.card-on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-.record-cap { margin-bottom: -6px; }
 
 .stage-placeholder {
   width: 100%; max-width: 320px; min-height: 160px; display: flex; align-items: center; justify-content: center;
@@ -105,31 +106,47 @@ body {
 }
 .bottle.tilt { transform: rotate(-32deg) translate(-10px, -6px); }
 
+/* 병 이미지(정적 에셋 보유 종류). 대기/따르기 공용, 따르기 시 기울임. */
+.bottle-img {
+  position: absolute; top: 8px; left: 50%; margin-left: -34px;
+  width: 68px; height: auto; object-fit: contain;
+  transform-origin: 50% 50%;
+}
+/* 따르는 동안: 병을 크게 기울여 입구(상단)가 아래 중앙의 잔을 향하게 + 잔 위로 내림.
+   // REVIEW(기기 확인): 회전각·위치는 이미지 미열람 상태의 추정값 — 화면 보고 미세조정 필요. */
+.bottle-img.tilt { transform: translate(-60px, 90px) rotate(130deg); }
+
+/* 소주 따르기 프레임 시퀀스 */
+.pour-frame {
+  width: 200px; height: 300px; object-fit: contain;
+  user-select: none; -webkit-user-select: none; pointer-events: none;
+}
+
 /* 술줄기 — 따르기 */
 .stream {
   position: absolute; top: 70px; left: 50%; margin-left: 4px;
   width: 5px; height: 96px; border-radius: 3px;
 }
 
-/* 잔 + 액체 (사다리꼴, 넘침 없이 내부 클립) */
+/* 잔 + 액체. S-04는 잔 '이미지'를 쓰고, 액체 채움(scaleY)은 잔 이미지 뒤에서 차오른다. */
 .glass-wrap { position: relative; width: 92px; height: 120px; }
-.glass-shape {
+.glass-shape { position: absolute; inset: 0; }
+/* 액체 채움 클립 영역(사다리꼴). 잔 이미지 보울과의 정렬은 // REVIEW(기기 확인) — 실 이미지 확인 후 조정. */
+.glass-fill-clip {
   position: absolute; inset: 0; overflow: hidden;
   clip-path: polygon(14% 0, 86% 0, 78% 100%, 22% 100%);
-  background: linear-gradient(100deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
-  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.2);
 }
 .glass-liquid {
-  /* 채움은 height%가 아니라 transform: scaleY로 한다. WebKit/WKWebView에서 inset(top/bottom)으로
-     높이가 정해진 부모(.glass-shape)에 대한 자식의 %-height가 0으로 해석돼 액체가 안 보이거나
-     스냅하는 버그가 있다(Chromium은 정상). transform은 모든 엔진에서 합성으로 안정 동작·레이아웃 미발생.
-     CSS transition은 일부러 두지 않는다 — WebKit에서 매 프레임 갱신되는 transform에 transition을 걸면
-     보간이 scaleY(0)으로 붕괴한다. 따르기는 rAF가 매 프레임 scaleY를 갱신해 부드럽고(트랜지션 불필요),
-     마시기는 탭당 일정량 즉시 감소(한 모금 느낌)로 둔다.
-     // REVIEW(기기 확인): 실제 토스 웹뷰에서 따르기 점진 차오름·마시기 감소가 의도대로 보이는지 재확인. */
+  /* 채움은 height%가 아니라 transform: scaleY로 한다(WebKit %-height 버그 회피, 팀 수정 보존).
+     CSS transition은 두지 않는다 — 매 프레임 scaleY를 rAF로 갱신. */
   position: absolute; left: 0; right: 0; top: 0; bottom: 0;
   transform-origin: bottom;
   transform: scaleY(0);
+}
+/* 잔 이미지 — 액체 위에 올려 실제 잔 외형을 보여준다(보울 투명부로 액체가 비침). */
+.glass-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; pointer-events: none;
 }
 .speech {
   position: absolute; top: -10px; left: 84px;
@@ -139,13 +156,6 @@ body {
 
 .pour-readout { text-align: center; min-height: 38px; }
 .pour-readout .big { font-size: 14px; font-weight: 700; }
-
-.bignum { font-size: 44px; font-weight: 900; color: var(--accent); }
-.bignum .unit { font-size: 16px; margin-left: 4px; }
-.stat-row { display: flex; gap: 10px; width: 100%; max-width: 320px; }
-.stat { flex: 1; background: var(--surf); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
-.stat-v { font-size: 15px; font-weight: 800; color: var(--accent); }
-.stat-k { font-size: 10px; color: var(--mut); margin-top: 2px; }
 
 .row {
   display: flex; align-items: center; justify-content: space-between;
