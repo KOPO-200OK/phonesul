@@ -1,0 +1,161 @@
+/* 골격 전용 최소 스타일. 비주얼 디자인은 후속 단계(에셋/디자인)에서 확정.
+   색·연출은 방향성 표현일 뿐 최종 디자인 아님. */
+:root {
+  --bg: #15171e;
+  --surf: #232734;
+  --line: #343a49;
+  --text: #ece7dd;
+  --mut: #9aa0ad;
+  --accent: #e8b96a;
+  --accent2: #c8893f;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.screen { display: flex; flex-direction: column; height: 100%; max-width: 480px; margin: 0 auto; }
+.screen-body { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+.center { align-items: center; justify-content: center; text-align: center; }
+
+.app-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 12px; border-bottom: 1px solid var(--line);
+}
+.hdr-title { font-size: 14px; font-weight: 700; }
+.hdr-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--surf); border: 1px solid var(--line); color: var(--mut);
+  font-size: 15px; cursor: pointer;
+}
+
+.logo { font-size: 40px; font-weight: 900; }
+.slogan { color: var(--mut); margin: 4px 0 20px; }
+
+.btn {
+  padding: 11px 16px; border-radius: 12px; font-size: 13px; font-weight: 700;
+  border: 1px solid var(--line); cursor: pointer;
+}
+.btn.primary { background: linear-gradient(180deg, var(--accent), var(--accent2)); color: #2a1c08; border: none; }
+.btn.ghost { background: transparent; color: var(--text); }
+.btn:disabled { opacity: 0.5; cursor: default; }
+
+.card {
+  width: 100%; max-width: 320px; background: var(--surf); border: 1px solid var(--line);
+  border-radius: 14px; padding: 18px; color: var(--text); cursor: pointer; text-align: center;
+}
+.card-label { font-size: 15px; font-weight: 700; }
+.card-cap { font-size: 11px; color: var(--mut); margin-top: 4px; }
+
+.drink-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.drink-card {
+  position: relative; background: var(--surf); border: 1px solid var(--line);
+  border-radius: 12px; padding: 16px 10px; color: var(--text); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.drink-name { font-weight: 600; }
+.drink-visc { font-size: 10px; color: var(--mut); }
+/* 종류별 색·거품 미리보기(CSS 플레이스홀더 — REVIEW(에셋 일관성)) */
+.drink-swatch {
+  position: relative; width: 30px; height: 42px; overflow: hidden;
+  clip-path: polygon(16% 0, 84% 0, 76% 100%, 24% 100%);
+  background: linear-gradient(100deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+  box-shadow: inset 0 0 0 1.2px rgba(255,255,255,0.2);
+}
+.swatch-liquid { position: absolute; left: 0; right: 0; bottom: 0; height: 62%; }
+.swatch-foam { position: absolute; left: 8%; right: 8%; top: 30%; height: 8px; border-radius: 6px; background: linear-gradient(180deg, #fff, #f3ead6); }
+.badge {
+  position: absolute; top: 6px; right: 6px; font-size: 9px; font-weight: 700;
+  color: #2a1c08; background: var(--accent); padding: 1px 6px; border-radius: 999px;
+}
+.card.card-on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.record-cap { margin-bottom: -6px; }
+
+.stage-placeholder {
+  width: 100%; max-width: 320px; min-height: 160px; display: flex; align-items: center; justify-content: center;
+  border: 1px dashed var(--line); border-radius: 16px; color: var(--mut);
+}
+.nav-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 8px; }
+
+/* ===== S-04 음주 인터랙션 연출 (코어) ===== */
+/* 단일 화면 내 요소 등장/퇴장(페이드). 누름 영역 제스처 차단(스크롤·선택·확대 방지). */
+.pour-stage {
+  position: relative;
+  width: 240px; height: 300px;
+  display: flex; align-items: flex-end; justify-content: center;
+  touch-action: none;
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  cursor: pointer;
+}
+.pour-el { transition: opacity 0.35s ease, transform 0.35s ease; }
+.is-hidden { opacity: 0; pointer-events: none; }
+
+/* 병 — 대기/따르기. 따르기 시 기울임(tilt). */
+.bottle {
+  position: absolute; top: 8px; left: 50%; margin-left: -20px;
+  width: 40px; height: 120px; border-radius: 8px 8px 6px 6px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.22);
+  transform-origin: 80% 90%;
+}
+.bottle.tilt { transform: rotate(-32deg) translate(-10px, -6px); }
+
+/* 술줄기 — 따르기 */
+.stream {
+  position: absolute; top: 70px; left: 50%; margin-left: 4px;
+  width: 5px; height: 96px; border-radius: 3px;
+}
+
+/* 잔 + 액체 (사다리꼴, 넘침 없이 내부 클립) */
+.glass-wrap { position: relative; width: 92px; height: 120px; }
+.glass-shape {
+  position: absolute; inset: 0; overflow: hidden;
+  clip-path: polygon(14% 0, 86% 0, 78% 100%, 22% 100%);
+  background: linear-gradient(100deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.2);
+}
+.glass-liquid {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  transition: height 0.1s linear;
+}
+.speech {
+  position: absolute; top: -10px; left: 84px;
+  background: var(--accent); color: #2a1c08; font-weight: 800; font-size: 14px;
+  padding: 4px 10px; border-radius: 12px; white-space: nowrap;
+}
+
+.pour-readout { text-align: center; min-height: 38px; }
+.pour-readout .big { font-size: 14px; font-weight: 700; }
+
+.bignum { font-size: 44px; font-weight: 900; color: var(--accent); }
+.bignum .unit { font-size: 16px; margin-left: 4px; }
+.stat-row { display: flex; gap: 10px; width: 100%; max-width: 320px; }
+.stat { flex: 1; background: var(--surf); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+.stat-v { font-size: 15px; font-weight: 800; color: var(--accent); }
+.stat-k { font-size: 10px; color: var(--mut); margin-top: 2px; }
+
+.row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surf); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 13px;
+}
+.row.muted { opacity: 0.7; }
+
+.hint { font-size: 11px; color: var(--mut); }
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(8, 9, 12, 0.62);
+  display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 100;
+}
+.modal-dialog {
+  width: 100%; max-width: 320px; background: #20242e; border: 1px solid var(--line);
+  border-radius: 16px; padding: 18px; text-align: center;
+}
+.modal-q { font-size: 14px; font-weight: 700; }
+.modal-sub { font-size: 11px; color: var(--mut); margin-top: 6px; }
+.modal-btns { display: flex; gap: 10px; margin-top: 14px; }
+.modal-btns .btn { flex: 1; }
