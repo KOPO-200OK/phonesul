@@ -120,8 +120,16 @@ body {
   box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.2);
 }
 .glass-liquid {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  transition: height 0.1s linear;
+  /* 채움은 height%가 아니라 transform: scaleY로 한다. WebKit/WKWebView에서 inset(top/bottom)으로
+     높이가 정해진 부모(.glass-shape)에 대한 자식의 %-height가 0으로 해석돼 액체가 안 보이거나
+     스냅하는 버그가 있다(Chromium은 정상). transform은 모든 엔진에서 합성으로 안정 동작·레이아웃 미발생.
+     CSS transition은 일부러 두지 않는다 — WebKit에서 매 프레임 갱신되는 transform에 transition을 걸면
+     보간이 scaleY(0)으로 붕괴한다. 따르기는 rAF가 매 프레임 scaleY를 갱신해 부드럽고(트랜지션 불필요),
+     마시기는 탭당 일정량 즉시 감소(한 모금 느낌)로 둔다.
+     // REVIEW(기기 확인): 실제 토스 웹뷰에서 따르기 점진 차오름·마시기 감소가 의도대로 보이는지 재확인. */
+  position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+  transform-origin: bottom;
+  transform: scaleY(0);
 }
 .speech {
   position: absolute; top: -10px; left: 84px;

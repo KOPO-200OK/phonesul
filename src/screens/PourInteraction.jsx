@@ -158,7 +158,8 @@ export default function PourInteraction() {
             <div className="glass-shape">
               <div
                 className="glass-liquid"
-                style={{ height: `${fill}%`, background: `linear-gradient(180deg, ${c0}, ${c1})` }}
+                // 채움은 transform: scaleY (CSS 주석 참조 — WebKit %-height 버그 회피).
+                style={{ transform: `scaleY(${fill / 100})`, background: `linear-gradient(180deg, ${c0}, ${c1})` }}
               />
             </div>
             {showAhh && <div className="speech">캬~</div>}
