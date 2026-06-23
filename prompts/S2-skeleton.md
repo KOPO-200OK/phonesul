@@ -4,7 +4,7 @@
 
 ## 지시 요약
 - React 18 + Vite, CSR 기준 빈 프로젝트 골격(context §4).
-- 앱인토스 프로젝트 생성·SDK·빌드 방식은 platform §0(MCP ax)에서 확인해 반영. 이 단계는 폴더·라우팅·상태관리 골격만.
+- 앱인토스 프로젝트 생성·SDK·빌드 방식은 adapter별 tool config와 MCP(ax)에서 확인해 반영. 이 단계는 폴더·라우팅·상태관리 골격만.
 - 화면설계서 S-01~S-10을 라우트/컴포넌트 빈 껍데기로.
 - /prompts 폴더 포함(pipeline §6.1).
 - 로컬 `npm run dev` 기동 확인.

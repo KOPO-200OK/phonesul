@@ -7,13 +7,13 @@
 ![Vite](https://img.shields.io/badge/Vite-WebView-646CFF?style=flat-square&logo=vite&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Apps_in_Toss-0064FF?style=flat-square)
 ![Backend](https://img.shields.io/badge/Backend-Static_CSR-lightgrey?style=flat-square)
-![AI Pipeline](https://img.shields.io/badge/AI-Claude_Code-8A2BE2?style=flat-square)
+![AI Pipeline](https://img.shields.io/badge/AI-Stage_Executor_Contract-8A2BE2?style=flat-square)
 
 건강폰술은 앱인토스 환경에서 동작하는 WebView 기반 미니앱입니다.  
 실제 음주를 권장하지 않고, 술자리의 분위기와 건배 경험만 가볍게 즐길 수 있도록 설계했습니다.
 
 이 프로젝트의 핵심은 앱 하나를 만드는 데서 끝나지 않습니다.  
-**Claude Code를 활용한 AI 개발 파이프라인을 재사용 가능한 구조로 정리하는 것**을 목표로 합니다.
+**AI agent를 교체할 수 있는 개발 파이프라인을 재사용 가능한 구조로 정리하는 것**을 목표로 합니다.
 
 ---
 
@@ -25,7 +25,7 @@
 - **기술 스택**: React 18, Vite
 - **서버 구조**: 백엔드 없음, 정적/CSR
 - **핵심 컨셉**: 실제 음주 없이 가상으로 따르고 건배하는 경험
-- **개발 방식**: Claude Code 중심 AI 개발 파이프라인
+- **개발 방식**: Stage Executor Contract 기반 AI 개발 파이프라인
 
 > 건강폰술은 “마시는 앱”이 아니라,  
 > **안 마시는 사람을 위한 가상 건배 앱**입니다.
@@ -60,7 +60,7 @@
 
 ## 🧭 AI 개발 파이프라인
 
-Claude Code를 중심으로 아래 흐름을 따릅니다.
+중심 코딩 에이전트를 Stage Executor Contract에 묶어 아래 흐름을 따릅니다.
 
 ```text
 S1 기획·스펙 해석
@@ -83,27 +83,33 @@ AI가 만든 결과물을 그대로 배포하지 않고, 사람이 확인해야 
 
 ---
 
-## 📁 CLAUDE.md 구조
+## 📁 AI 파이프라인 구조
 
-이 레포에는 Claude Code가 실제로 읽는 파일과, 사람이 읽기 위한 설계 문서가 따로 있습니다.
+이 레포에는 agent adapter가 실제로 읽는 진입점과, 여러 adapter가 공통으로 읽는 `shared/` 계약 문서가 따로 있습니다.
 
 ### 실행용 파일
 
 ```text
-CLAUDE.md              # 진입점. 아래 3개 파일을 import
-├─ CLAUDE.pipeline.md  # ① 파이프라인 방법론
-├─ CLAUDE.platform.md  # ② 앱인토스 플랫폼 규칙
-└─ CLAUDE.context.md   # ③ 건강폰술 앱 컨텍스트
+CLAUDE.md              # Claude Code adapter. 실제 실행·검증됨
+AGENTS.md              # OpenAI Codex adapter 스텁. 전환 가능성 증명용, 미실행
+
+shared/
+├─ pipeline.md         # ① 파이프라인 방법론
+├─ platform.md         # ② 앱인토스 플랫폼 규칙
+└─ context.md          # ③ 건강폰술 앱 컨텍스트
 ```
 
-- **`CLAUDE.pipeline.md`**  
+- **`shared/pipeline.md`**  
   개발 단계, 검수 게이트, 커밋 규칙을 정의합니다. 앱과 플랫폼이 바뀌어도 유지합니다.
 
-- **`CLAUDE.platform.md`**  
+- **`shared/platform.md`**  
   앱인토스 정책, 심사 기준, 플랫폼 제약을 정리합니다. 플랫폼이 바뀌면 교체합니다.
 
-- **`CLAUDE.context.md`**  
+- **`shared/context.md`**  
   건강폰술의 기능, 화면 흐름, 기술 결정을 담습니다. 아이디어가 바뀌면 새로 작성합니다.
+
+- **`docs/stage-executor-contract.md`**  
+  각 AI agent가 단계별로 받아야 하는 입력과 남겨야 하는 출력을 정의합니다. 런타임 코드 인터페이스가 아니라 문서화된 계약입니다.
 
 ### 사람용 설계 문서
 
@@ -118,21 +124,22 @@ docs/
 `docs/` 아래 문서는 검수와 발표를 위한 상세 설명입니다.  
 결정 이유와 배경까지 담고 있어서 사람이 읽기 좋게 작성되어 있습니다.
 
-실제 실행 기준은 루트 파일입니다.  
-루트 파일과 `docs/` 내용이 다르면 루트 파일을 우선합니다.
+실제 실행 기준은 adapter 진입점과 `shared/` 계약 파일입니다.  
+루트 파일·`shared/`와 `docs/` 내용이 다르면 루트 파일·`shared/`를 우선합니다.
 
 <details>
-<summary><strong>왜 CLAUDE.md를 3개로 나눴나요?</strong></summary>
+<summary><strong>왜 shared 3파일과 adapter 진입점을 나눴나요?</strong></summary>
 
 <br/>
 
-하나의 프롬프트 파일에 모든 내용을 넣으면, 앱이 바뀔 때마다 전체 규칙을 다시 고쳐야 합니다.
+하나의 프롬프트 파일에 모든 내용을 넣으면, 앱이나 플랫폼 또는 AI agent가 바뀔 때마다 전체 규칙을 다시 고쳐야 합니다.
 
 그래서 바뀌는 범위를 분리했습니다.
 
-- **① 파이프라인 방법론**: 앱·플랫폼이 바뀌어도 유지
+- **① 파이프라인 방법론**: 앱·플랫폼·agent가 바뀌어도 유지
 - **② 플랫폼 규칙**: 앱인토스가 아닌 다른 플랫폼으로 바뀌면 교체
 - **③ 앱별 컨텍스트**: 건강폰술이 아닌 다른 아이디어로 바뀌면 새로 작성
+- **Agent Adapter**: Claude Code, Codex, Gemini CLI 등 실행 agent가 바뀌면 진입점과 tool setup만 교체
 
 이 구조 덕분에 건강폰술 이후에도 같은 AI 개발 흐름을 다시 사용할 수 있습니다.
 
@@ -182,7 +189,7 @@ AI 작업과 사람 검수 작업을 커밋 단위에서 구분합니다.
 
 | 접두사 | 의미 | 예시 |
 |---|---|---|
-| `ai:` | Claude Code가 생성한 작업, 사람 검수 전 상태 | `ai: 따르기 인터랙션 구현` |
+| `ai:` | AI agent가 생성한 작업, 사람 검수 전 상태 | `ai: 따르기 인터랙션 구현` |
 | `review:` | 사람이 검수하거나 수정한 작업 | `review: 따르기 임계값 조정` |
 | `docs:` | 문서 추가·수정 | `docs: 앱별 컨텍스트 정리` |
 | `chore:` | 설정, 빌드, 의존성 등 기타 작업 | `chore: vite 설정 추가` |
@@ -204,7 +211,7 @@ AI 작업과 사람 검수 작업을 커밋 단위에서 구분합니다.
 - 생성형 AI 자산 사용 시 고지·표시 의무 확인
 - 앱 등록명, 로고, 썸네일 등 변경 불가·반려 가능 항목은 사람 검수 필수
 
-자세한 정책 기준은 `CLAUDE.platform.md`, 건강폰술 적용 기준은 `CLAUDE.context.md`를 참고합니다.
+자세한 정책 기준은 `shared/platform.md`, 건강폰술 적용 기준은 `shared/context.md`를 참고합니다.
 
 ---
 
