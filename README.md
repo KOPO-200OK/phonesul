@@ -6,7 +6,7 @@
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-WebView-646CFF?style=flat-square&logo=vite&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Apps_in_Toss-0064FF?style=flat-square)
-![Backend](https://img.shields.io/badge/Backend-Static_CSR-lightgrey?style=flat-square)
+![Backend](https://img.shields.io/badge/Backend-Static_CSR_+_Realtime_wss-lightgrey?style=flat-square)
 ![AI Pipeline](https://img.shields.io/badge/AI-Stage_Executor_Contract-8A2BE2?style=flat-square)
 
 건강폰술은 앱인토스 환경에서 동작하는 WebView 기반 미니앱입니다.  
@@ -23,7 +23,7 @@
 - **플랫폼**: 앱인토스, Toss 미니앱
 - **앱 형태**: WebView 기반 미니앱
 - **기술 스택**: React 18, Vite
-- **서버 구조**: 백엔드 없음, 정적/CSR
+- **서버 구조**: 프론트 백엔드 없음(정적/CSR) · 실시간 건배방만 별도 서버(FastAPI + wss)
 - **핵심 컨셉**: 실제 음주 없이 가상으로 따르고 건배하는 경험
 - **개발 방식**: Stage Executor Contract 기반 AI 개발 파이프라인
 
@@ -52,9 +52,9 @@
 - 🧍 **상황 모드**  
   혼술 / 술자리 모드로 흐름을 나눕니다.
 
-- 🔗 **건배 공유 + 건강 기록**  
-  공유 링크로 함께 건배하는 소셜 경험을 제공하고,  
-  실제로 마시지 않은 횟수와 절약한 칼로리·비용을 표시합니다.
+- 🥂 **실시간 건배방**  
+  방을 만들어 코드를 나누면, 여러 명이 같은 방에서 동시에 "짠" 합니다.  
+  경쟁·순위 없이 함께 축하하는 소셜 경험으로, 별도 실시간 서버(FastAPI + wss)와 연동됩니다.
 
 ---
 
@@ -156,7 +156,7 @@ docs/
   서버 없이 정적/CSR 구조로 동작합니다.
 
 - **클라이언트 저장**  
-  앱 설정, 모드, 가상 건배 횟수는 앱인토스 Storage를 사용합니다.
+  앱 설정과 모드는 앱인토스 Storage를 사용합니다. 실시간 건배방 상태는 별도 서버 메모리에만 두며 방 종료 시 폐기합니다(영속 저장 없음).
 
 - **모션 센서 검증**  
   기울이기와 흔들기 동작은 WebView에서 `DeviceOrientationEvent`, `DeviceMotionEvent`를 사용할 수 있는지 검증합니다.  
