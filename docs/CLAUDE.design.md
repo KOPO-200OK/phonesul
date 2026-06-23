@@ -1,34 +1,34 @@
-# CLAUDE.md — 건강폰술 AI 개발 파이프라인 (진입점)
+# CLAUDE.md — Claude Code adapter 진입점
 
-> 이 파일은 Claude Code가 매 세션 처음 읽는 **메인 진입점**이다.
-> 실제 규칙은 아래 세 파일로 분리되어 있고, `@import`로 모두 불러온다.
+> 이 파일은 Claude Code가 매 세션 처음 읽는 **adapter 진입점**이다.
+> 실제 규칙은 `shared/` 아래 세 파일로 분리되어 있고, `@import`로 모두 불러온다.
 > 세 파일은 "바뀌는 주기"에 따라 나눴다 — 다음 아이디어로 갈아끼울 때 ③만 새로 쓰면 된다.
 
 ## 구성
 
-@CLAUDE.pipeline.md
-@CLAUDE.platform.md
-@CLAUDE.context.md
+@shared/pipeline.md
+@shared/platform.md
+@shared/context.md
 
 ## 각 파일의 역할
 
 | 파일 | 역할 | 재사용성 |
 |---|---|---|
-| **① CLAUDE.pipeline.md** | 파이프라인 방법론 — 단계·검수 게이트·검수 마커·커밋 규칙 | 앱·플랫폼이 바뀌어도 유지 |
-| **② CLAUDE.platform.md** | 앱인토스 플랫폼 규칙 — 정책·심사·등록 제약 | 플랫폼이 바뀌면 교체 |
-| **③ CLAUDE.context.md** | 건강폰술 앱 컨텍스트 — 기능·화면·기술 결정·음주 대응 | 아이디어가 바뀌면 새로 씀 |
+| **① shared/pipeline.md** | 파이프라인 방법론 — 단계·검수 게이트·검수 마커·커밋 규칙 | 앱·플랫폼·agent가 바뀌어도 유지 |
+| **② shared/platform.md** | 앱인토스 플랫폼 규칙 — 정책·심사·등록 제약 | 플랫폼이 바뀌면 교체 |
+| **③ shared/context.md** | 건강폰술 앱 컨텍스트 — 기능·화면·기술 결정·음주 대응 | 아이디어가 바뀌면 새로 씀 |
 
 ## 읽는 순서·우선 원칙
 
 1. **①의 방법론**(단계·게이트·검수 규칙)을 기준으로 작업한다.
 2. **②의 플랫폼 규칙**은 "하면 안 되는 것·확인할 것"의 가드레일이다. 위반 금지.
 3. **③의 앱 컨텍스트**는 "건강폰술은 그래서 이렇게 만든다"는 구체 결정이다.
-4. SDK 사용법(how)은 이 문서들에 적지 않는다 → 앱인토스 MCP(ax)·스킬에 위임한다.
+4. SDK 사용법(how)은 shared 정책 문서에 적지 않는다 → adapter별 tool config와 앱인토스 MCP(ax)·문서 폴백에 위임한다.
 5. 충돌 시: 플랫폼 정책(②) > 앱 결정(③). 방법론(①)은 "어떻게 일하는가"라 별도 층이다.
 
 ## 핵심 원칙 (한 줄)
 
-- **What은 고정(이 문서들), How는 위임(Claude Code·MCP).**
+- **What은 고정(shared 계약), How는 위임(agent adapter·MCP).**
 - **AI 실수는 팀 책임** → 검수 마커(UNVERIFIED/ASSUMPTION/REVIEW)로 사람이 볼 지점을 드러낸다.
 - **콘셉트**: 마시는 앱이 아니라 "안 마시는 사람을 위한 앱". 음주 미화·권장 금지.
 

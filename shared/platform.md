@@ -1,17 +1,18 @@
-# CLAUDE.md — ② 앱인토스 플랫폼 규칙
+# shared/platform.md — ② 앱인토스 플랫폼 규칙
 
 > 3-파일 구조 중 둘째. 앱인토스 정책·심사·등록 제약을 담는다. 플랫폼이 바뀌면 이 파일만 교체.
 > **기준 시점 2026-06-21.** 심사 기준은 수시 개정되므로 출시 직전 공식 문서 재확인. (출처: developers-apps-in-toss.toss.im)
+>
+> `shared/`는 여러 AI agent adapter가 공통으로 읽는 벤더 중립 스펙이다.
+> 여기서 말하는 "공유"는 앱/플랫폼이 고정된다는 뜻이 아니라,
+> 실행 agent가 바뀌어도 동일하게 주입되는 계약 입력이라는 뜻이다.
 
 ## 0. 역할 분담
 
-- **SDK 사용법(how)은 여기 적지 않는다** → MCP/스킬에 위임:
-  - MCP(ax): `claude mcp add --transport stdio apps-in-toss ax mcp start`
-  - Skills: `/plugin install knowledge-skills@apps-in-toss-skills`
-  - 프로젝트 생성: `npx create-ait-app {appName}` (TDS=Y, skills=Claude Code)
+- **SDK 사용법(how)과 agent별 설치 커맨드는 여기 적지 않는다** → adapter별 tool config에 위임한다.
 - 이 파일은 도구가 모르는 **정책 판단(what)**만 담는다.
 
-> MCP는 "함수를 어떻게 쓰나"는 알아도 "이 기능이 정책에 걸리나"는 모른다. 그 가드레일이 이 파일.
+> MCP·문서·스킬 폴백은 "함수를 어떻게 쓰나"를 보조할 수 있어도 "이 기능이 정책에 걸리나"는 자동 보장하지 않는다. 그 가드레일이 이 파일.
 
 ## 1. 출시 불가 (어기면 등록 자체 안 됨)
 
