@@ -15,6 +15,7 @@ import PourInteraction from './screens/PourInteraction.jsx'
 import Celebrate from './screens/Celebrate.jsx'
 import CheersRequest from './screens/CheersRequest.jsx'
 import CheersReceive from './screens/CheersReceive.jsx'
+import CheersRoom from './screens/CheersRoom.jsx'
 import Settings from './screens/Settings.jsx'
 import ExitModal from './components/ExitModal.jsx'
 import { ExitModalContext } from './components/exitModalContext.js'
@@ -45,6 +46,8 @@ export default function App() {
           <Route path="/cheers" element={<CheersRequest />} />
           {/* S-07 건배 수신(링크 진입) */}
           <Route path="/cheers/receive" element={<CheersReceive />} />
+          {/* S-10 실시간 건배방 (F-RT) — create/join은 navigate state로 전달 */}
+          <Route path="/room" element={<CheersRoom />} />
           {/* S-08 설정 */}
           <Route path="/settings" element={<Settings />} />
           {/* 알 수 없는 경로는 스플래시로 */}

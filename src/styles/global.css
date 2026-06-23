@@ -177,3 +177,51 @@ body {
 .modal-sub { font-size: 11px; color: var(--mut); margin-top: 6px; }
 .modal-btns { display: flex; gap: 10px; margin-top: 14px; }
 .modal-btns .btn { flex: 1; }
+
+/* ===== S-10 실시간 건배방 (F-RT) =====
+   짠 연출은 기존 .glass-wrap 연출을 재사용한다(에셋 추가 없음). */
+.card-block {
+  width: 100%; max-width: 320px; background: var(--surf); border: 1px solid var(--line);
+  border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; align-items: stretch;
+}
+.card-block .card-label { text-align: left; }
+.card-block .hint { text-align: left; }
+
+.join-row { display: flex; gap: 8px; }
+.code-input {
+  flex: 1; min-width: 0; padding: 10px 12px; font-size: 14px;
+  background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 10px;
+}
+.code-input::placeholder { color: var(--mut); }
+
+.room-top { width: 100%; max-width: 320px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.room-code { display: flex; flex-direction: column; align-items: flex-start; }
+.room-code-cap { font-size: 11px; color: var(--mut); }
+.room-code-val { font-size: 22px; font-weight: 900; letter-spacing: 2px; }
+
+.room-status { font-size: 12px; color: var(--mut); }
+.room-status-open { color: #7fc88a; }
+.room-status-reconnecting, .room-status-connecting { color: var(--accent); }
+.room-status-error { color: #d98a8a; }
+
+.roster { width: 100%; max-width: 320px; text-align: left; }
+.roster-head { font-size: 12px; color: var(--mut); margin-bottom: 6px; }
+.roster-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.roster-item {
+  background: var(--surf); border: 1px solid var(--line); border-radius: 10px;
+  padding: 8px 12px; font-size: 13px;
+}
+.roster-item.muted { color: var(--mut); border-style: dashed; }
+
+.cheers-stage {
+  position: relative; width: 240px; height: 200px;
+  display: flex; align-items: center; justify-content: center;
+}
+/* 짠 수신 시 전원 동시 연출 — 잔이 살짝 부딪히듯 흔들림(기존 잔 연출 재사용). */
+.cheers-stage.is-cheers .glass-wrap { animation: clink 0.45s ease; }
+@keyframes clink {
+  0% { transform: rotate(0) translateX(0); }
+  25% { transform: rotate(-12deg) translateX(-8px); }
+  55% { transform: rotate(8deg) translateX(6px); }
+  100% { transform: rotate(0) translateX(0); }
+}
