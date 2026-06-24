@@ -9,6 +9,7 @@ import AppHeader from '../components/AppHeader.jsx'
 import Glass from '../components/Glass.jsx'
 import { useAppStore } from '../store/useAppStore.js'
 import { playSound, haptic, startPourSound, stopPourSound } from '../lib/feedback.js'
+import { startBgm } from '../lib/audioPolicy.js'
 import { DRINK_MAP, MODE_MAP } from '../data/presets.js'
 
 // 채움 타이밍(프로토타입 방식). // ASSUMPTION: 임의값 — 검수·튜닝 단계 조정.
@@ -123,6 +124,10 @@ export default function PourInteraction() {
     setPhase('idle')
   }, [stopFilling])
 
+  // 모드별 BGM 시작(혼술=잔잔 / 술자리=신나는). 사운드 설정·무음/백그라운드 정책은 audioPolicy가 처리.
+  //   언마운트해도 멈추지 않음(건배·축하 화면까지 이어짐). 정지는 종료/백그라운드/사운드 Off에서.
+  useEffect(() => { startBgm(mode) }, [mode])
+
   // 언마운트 정리 — 누수 방지(비기능: 반복 전환 시 누수 없음).
   useEffect(() => () => {
     clearTimeout(pressTimer.current)
@@ -150,7 +155,7 @@ export default function PourInteraction() {
           >
             <div className="idle-bottle-box">
               {drink.bottle
-                ? <img src={drink.bottle} alt={drink.label} draggable={false} style={{ width: 100, height: 220, objectFit: 'contain' }} />
+                ? <img src={drink.bottle} alt={drink.label} draggable={false} style={{ width: 100, height: 220, objectFit: 'contain', transform: `scale(${drink.bottleScale ?? 1})` }} />
                 : <div className="bottle" style={{ position: 'static' }} />}
             </div>
             <div style={{ fontSize: 26, fontWeight: 800, marginBottom: 10 }}>길게 눌러 따르기</div>
@@ -162,11 +167,11 @@ export default function PourInteraction() {
         {/* ── 따르는 중 ── */}
         {phase === 'pour' && (
           <div className="pour-active">
-            {/* 병 — 기울기 20→60deg */}
+            {/* 병 — 기울기 20→60deg. 따르는 중엔 뚜껑 열린 병 사용. */}
             <img
-              src={drink.bottle} alt={drink.label} draggable={false}
+              src={drink.bottleOpen ?? drink.bottle} alt={drink.label} draggable={false}
               className="pour-bottle"
-              style={{ transform: `rotate(${bottleDeg.toFixed(1)}deg)` }}
+              style={{ transform: `rotate(${bottleDeg.toFixed(1)}deg) scale(${drink.bottleScale ?? 1})` }}
             />
             {/* 술줄기 */}
             {isPressing && (
@@ -217,7 +222,10 @@ export default function PourInteraction() {
           {drink.celebrate && (
             <button className="btn ghost" onClick={() => navigate('/celebrate')} style={{ height: 40, fontSize: 13 }}>샴페인 축하</button>
           )}
-          <button className="btn ghost" onClick={() => navigate('/cheers')} style={{ height: 40, fontSize: 13 }}>건배하기</button>
+          {/* 건배방은 술자리 모드 전용 — 혼술 모드에선 진입 버튼 미노출 */}
+          {mode === 'party' && (
+            <button className="btn ghost" onClick={() => navigate('/cheers')} style={{ height: 40, fontSize: 13 }}>건배하기</button>
+          )}
           <button className="btn ghost" onClick={() => navigate('/settings')} style={{ height: 40, fontSize: 13 }}>설정</button>
         </div>
       )}

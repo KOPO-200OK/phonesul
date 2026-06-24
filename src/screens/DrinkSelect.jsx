@@ -26,7 +26,7 @@ export default function DrinkSelect() {
           {grid.map((d) => (
             <button key={d.key} className="drink-card" onClick={() => pick(d.key, false)}>
               {d.bottle ? (
-                <img className="drink-thumb" src={d.bottle} alt="" draggable={false} />
+                <img className="drink-thumb" src={d.bottle} alt="" draggable={false} style={{ transform: `scale(${d.bottleScale ?? 1})` }} />
               ) : (
                 <span className="drink-swatch" style={{ background: `linear-gradient(180deg, ${d.colors[0]}, ${d.colors[1]})`, width: 44, height: 90, borderRadius: 8 }} />
               )}

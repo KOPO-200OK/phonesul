@@ -8,6 +8,7 @@
 import { useNavigate } from 'react-router-dom'
 import AppHeader from '../components/AppHeader.jsx'
 import { useAppStore } from '../store/useAppStore.js'
+import { startBgm, stopBgm } from '../lib/audioPolicy.js'
 import { MODE_MAP } from '../data/presets.js'
 
 // 골드 토글 — 접근성 위해 role="switch" + aria-checked.
@@ -30,13 +31,20 @@ export default function Settings() {
   const navigate = useNavigate()
   const { settings, setSound, setHaptic, mode } = useAppStore()
 
+  // 사운드 토글 → 설정 저장 + BGM 즉시 반영(끄면 정지, 켜면 현재 모드 BGM 재생).
+  const onToggleSound = (v) => {
+    setSound(v)
+    if (v) startBgm(mode)
+    else stopBgm()
+  }
+
   return (
     <div className="screen">
       <AppHeader title="설정" />
       <div className="screen-body" style={{ gap: 0 }}>
         <div className="row">
           <span>사운드</span>
-          <Switch checked={settings.sound} onChange={setSound} label="사운드" />
+          <Switch checked={settings.sound} onChange={onToggleSound} label="사운드" />
         </div>
         <div className="row">
           <span>진동(햅틱)</span>

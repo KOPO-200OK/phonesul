@@ -116,9 +116,9 @@ body {
 .drink-card:active { transform: scale(.98); opacity: .9; }
 .drink-thumb { width: 60px; height: 90px; object-fit: contain; }
 .drink-name { font-size: 15px; font-weight: 600; }
-/* 샴페인 풀위드 카드 */
-.drink-wide { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; height: auto; flex-direction: row; }
-.drink-wide .drink-thumb { width: 50px; }
+/* 샴페인 풀위드 카드 — 텍스트(뱃지·이름)는 좌측 유지, 병만 카드 가로 중앙에 배치. */
+.drink-wide { position: relative; display: flex; align-items: center; justify-content: flex-start; padding: 16px 24px; min-height: 120px; flex-direction: row; }
+.drink-wide .drink-thumb { width: 50px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
 .badge {
   background: var(--gold); color: var(--dark);
   font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 10px; width: fit-content; margin-bottom: 8px;
@@ -157,23 +157,23 @@ body {
 }
 
 /* 따르는 중 */
-/* 따르는 병 — 회전축=바닥 중앙(45,270). 최대 60° 회전 시 입구(축에서 위로 180px)가
-   (45+180·sin60, 270−180·cos60) ≈ (201,180) → 고정 술줄기(.pour-stream) 윗점과 만남. */
+/* 따르는 병 — 회전축=바닥 중앙(32,270). 최대 60° 회전 시 입구가
+   (32+180·sin60, 270−180·cos60) ≈ (188,180)=화면 가로 중앙 → 술줄기(.pour-stream) 윗점과 만남. */
 .pour-bottle {
-  position: absolute; left: 0; top: 90px; width: 90px; height: 180px; object-fit: contain;
+  position: absolute; left: -13px; top: 90px; width: 90px; height: 180px; object-fit: contain;
   transform-origin: bottom center; transition: transform 80ms linear;
   filter: drop-shadow(0 8px 24px rgba(0,0,0,.5));
 }
-/* 술줄기 — 고정 위치. 윗점(left197,top180, 폭8 중심≈201)이 병 최대 기울기 입구와 만남. */
-.pour-stream { position: absolute; left: 197px; top: 180px; width: 8px; border-radius: 4px; transition: height 80ms linear; }
+/* 술줄기 — 화면 가로 중앙(폭8 중심=50%). 윗점(top180)이 병 최대 기울기 입구와 만남. */
+.pour-stream { position: absolute; left: calc(50% - 4px); top: 180px; width: 8px; border-radius: 4px; transition: height 80ms linear; }
 /* 공용 잔 박스(Glass.jsx) — 잔 SVG + 보울 영역 액체 채움(따르기·마시기·건배 공용).
    액체는 .glass-fill(보울 사각형, presets.js bowl로 위치 지정) 안에서만 차오른다. */
 .glass-box { position: relative; }
 .glass-fill { position: absolute; overflow: hidden; z-index: 1; border-radius: 0 0 6px 6px; }
 .glass-fill-liquid { position: absolute; left: 0; right: 0; bottom: 0; transition: height 120ms linear; }
 .glass-box-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: 2; pointer-events: none; }
-/* 따르기 화면 잔 위치 — 술줄기 낙하 지점(중심 ≈201px)에 잔 중심을 맞춤. */
-.glass-pour { position: absolute; left: 201px; transform: translateX(-50%); bottom: 80px; }
+/* 따르기 화면 잔 — 화면 가로 중앙(=술줄기 낙하점). 누르기 버튼과 간격 확보 위해 위로(bottom 200). */
+.glass-pour { position: absolute; left: 50%; transform: translateX(-50%); bottom: 200px; }
 .hold-btn {
   position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
   width: 64px; height: 64px; border-radius: 50%; border: none; cursor: pointer;
@@ -181,7 +181,8 @@ body {
   box-shadow: 0 4px 20px rgba(245,200,66,.5);
   font-size: 12px; font-weight: 700; color: #333;
 }
-.pour-cap { position: absolute; bottom: 102px; left: 0; right: 0; text-align: center; font-size: 14px; color: rgba(255,255,255,.4); }
+/* "누르는 동안 차오름" — 누르기 버튼(하단 중앙) 좌측에 세로 가운데 정렬(잔·버튼과 겹침 방지). */
+.pour-cap { position: absolute; bottom: 54px; left: 12px; right: calc(50% + 44px); text-align: right; font-size: 13px; color: rgba(255,255,255,.4); }
 
 /* 마시기 */
 .drink-active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -194,9 +195,9 @@ body {
   padding: 4px 12px; border-radius: 14px; white-space: nowrap;
   animation: popIn .3s cubic-bezier(.34,1.56,.64,1);
 }
-/* % 배지 — 잔(술줄기 낙하 지점) 위 */
+/* % 배지 — 화면 가로 중앙, 잔 위. */
 .fill-badge {
-  position: absolute; left: 201px; transform: translateX(-50%); bottom: 248px;
+  position: absolute; left: 50%; transform: translateX(-50%); bottom: 368px;
   background: rgba(20,40,80,.85); color: #7ab8ff;
   border-radius: 12px; padding: 3px 10px; font-size: 13px; font-weight: 700;
 }

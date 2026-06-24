@@ -9,8 +9,10 @@
 //    반드시 대상 실행 환경(토스 WebView)에서 사람이 동작 확인할 것(context §4·§10).
 import { useAppStore } from '../store/useAppStore.js'
 import { stopPourSound } from './feedback.js'
+import { MODE_MAP } from '../data/presets.js'
 
-let bgmPlaying = false
+let bgmAudio = null
+let bgmMode = null
 
 // F-SY-03: 기기 무음 모드면 사운드 억제.
 export function isSilentMode() {
@@ -18,21 +20,41 @@ export function isSilentMode() {
   return false // mock: 무음 아님으로 가정
 }
 
+// 모드별 BGM 재생(혼술=잔잔 / 술자리=신나는). 루프, 사운드 설정·무음 모드 종속.
+//   효과음보다 작게(0.45). 같은 모드 트랙이 이미 재생 중이면 유지(중복 시작 방지).
 export function startBgm(mode) {
   if (!useAppStore.getState().settings.sound) return // F-SY-01
   if (isSilentMode()) return // F-SY-03
-  bgmPlaying = true
-  // TODO(S2): 모드별 BGM 재생(혼술 잔잔 / 술자리 활기) — 오디오 에셋 연결.
-  if (import.meta.env.DEV) console.debug('[bgm] start', mode)
+  const track = MODE_MAP[mode]?.bgm
+  if (!track) return // 모드 미설정/트랙 없음 → 무음
+  if (bgmAudio && bgmMode === mode && !bgmAudio.paused) return // 이미 재생 중
+  stopBgm()
+  bgmMode = mode
+  try {
+    bgmAudio = new Audio(track)
+    bgmAudio.loop = true
+    bgmAudio.volume = 0.45
+    const p = bgmAudio.play()
+    if (p && typeof p.catch === 'function') p.catch(() => {}) // 자동재생 차단 등 무시
+  } catch {
+    bgmAudio = null
+  }
 }
 
 export function stopBgm() {
-  bgmPlaying = false
-  if (import.meta.env.DEV) console.debug('[bgm] stop')
+  if (bgmAudio) {
+    try {
+      bgmAudio.pause()
+      bgmAudio.currentTime = 0
+    } catch {
+      /* ignore */
+    }
+    bgmAudio = null
+  }
 }
 
 export function isBgmPlaying() {
-  return bgmPlaying
+  return !!bgmAudio && !bgmAudio.paused
 }
 
 // F-SY-04: 백그라운드 전환 시 즉시 정지, 복귀 시 재생.

@@ -2,6 +2,7 @@
 // '종료' → 스플래시(S-01)로 복귀해 처음부터 재시작(WebView/브라우저엔 실제 종료 API 없음).
 // // UNVERIFIED: 앱인토스 WebView 실제 앱 종료 호출 방식 미확인 — 실기기 연결 시 SDK 종료로 교체.
 import { useNavigate } from 'react-router-dom'
+import { stopBgm } from '../lib/audioPolicy.js'
 
 export default function ExitModal({ open, onClose }) {
   const navigate = useNavigate()
@@ -9,6 +10,7 @@ export default function ExitModal({ open, onClose }) {
 
   const onExit = () => {
     // TODO(실기기): 앱인토스 종료 SDK 호출로 교체. 지금은 스플래시 복귀로 대체.
+    stopBgm() // 경험 종료 → BGM 정지
     onClose()
     navigate('/', { replace: true })
   }
