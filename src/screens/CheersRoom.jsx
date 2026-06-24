@@ -10,6 +10,7 @@ import Glass from '../components/Glass.jsx'
 import { useAppStore } from '../store/useAppStore.js'
 import { createRoom, createRoomClient, closeRoom, roomClosedMessage } from '../lib/realtimeRoom.js'
 import { playSound, haptic } from '../lib/feedback.js'
+import { shareRoomCode } from '../lib/share.js'
 import { DRINK_MAP } from '../data/presets.js'
 
 // 짠 연출 노출 시간(ms). // ASSUMPTION: 임의값 — 시각 확인 후 조정.
@@ -124,23 +125,11 @@ export default function CheersRoom() {
     clientRef.current?.sendCheers() // F-RT-05 — 자기 화면도 서버 broadcast 수신으로 연출
   }
 
-  // 코드 공유(F-RT-02). // UNVERIFIED: 앱인토스 share/getTossShareLink 실제 동작 — SDK 확인 필요.
-  //   여기선 웹 표준 폴백(navigator.share → 클립보드 → 코드 노출)만. 실제 SDK 연결은 후속.
+  // 코드 공유(F-RT-02) — 앱인토스 SDK(share/getTossShareLink) 우선, 폴백은 lib/share.js 참조.
   const shareCode = async () => {
-    const text = `폰술 건배방 코드: ${code}`
-    try {
-      if (navigator.share) {
-        await navigator.share({ text })
-        return
-      }
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(code)
-        setErrorMsg('코드를 복사했어요')
-        return
-      }
-    } catch {
-      /* 사용자 취소 등 무시 */
-    }
+    const res = await shareRoomCode(code)
+    // 공유 시트 성공(toss/web-share)이면 message 없음. 복사/실패만 안내 노출.
+    if (res.message) setErrorMsg(res.message)
   }
 
   const leave = async () => {

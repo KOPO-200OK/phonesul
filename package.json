@@ -3,14 +3,19 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "건강폰술(가칭) — 절주·대체형 소셜 WebApp. 골격(S2 skeleton). name 필드는 npm 패키지명일 뿐 앱인토스 appName이 아님(appName은 변경 불가·미확정 → REVIEW).",
+  "description": "폰술 — 절주·대체형 소셜 WebApp. 앱인토스(Granite) 변환됨. appName=phonesul(콘솔 등록·승인 완료, 변경 불가). name 필드는 npm 패키지명일 뿐 appName 아님.",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "granite dev",
+    "build": "ait build",
+    "deploy": "ait deploy",
     "test": "vitest run"
   },
   "dependencies": {
+    "@apps-in-toss/web-framework": "^2.9.2",
+    "@emotion/react": "^11.14.0",
+    "@toss/tds-colors": "^0.1.0",
+    "@toss/tds-mobile": "^2.5.0",
+    "@toss/tds-mobile-ait": "^2.5.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
@@ -21,9 +26,9 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
-    "@vitejs/plugin-react": "^4.3.2",
+    "@vitejs/plugin-react": "^4.3.4",
     "jsdom": "^29.1.1",
-    "vite": "^5.4.8",
+    "vite": "^6.2.0",
     "vitest": "^2.1.9"
   }
 }

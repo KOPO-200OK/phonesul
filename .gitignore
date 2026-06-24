@@ -21,12 +21,14 @@ pnpm-debug.log*
 .npm
 .pnpm-store/
 
-# ===== Vite / 빌드 산출물 =====
+# ===== Vite / 앱인토스(Granite) 빌드 산출물 =====
 dist/
 dist-ssr/
 build/
 *.local
 .vite/
+.granite/
+*.ait
 
 # ===== 환경 변수 (비밀값) =====
 .env
