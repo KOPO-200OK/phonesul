@@ -15,7 +15,7 @@ import { useId } from 'react'
 // 보울/비율 누락 시 안전 기본값(거의 정사각 텀블러).
 const DEFAULT_BOWL = { top: 10, bottom: 90, left: 12, right: 88 }
 
-export default function Glass({ drink, level = 0, height = 160, liquidColor, className = '' }) {
+export default function Glass({ drink, level = 0, height = 160, liquidColor, className = '', style }) {
   const aspect = drink?.glassAspect ?? 0.85
   const b = drink?.bowl ?? DEFAULT_BOWL
   const width = Math.round(height * aspect)
@@ -37,7 +37,7 @@ export default function Glass({ drink, level = 0, height = 160, liquidColor, cla
   const liquidH = vbH * (lvl / 100)
 
   return (
-    <div className={`glass-box ${className}`} style={{ width, height }}>
+    <div className={`glass-box ${className}`} style={{ width, height, ...style }}>
       {/* 보울 영역(잔 내부)으로 클리핑된 액체 — 이 영역 안에서만 차오름.
           bowl.clip(폴리곤)이 있으면 테이퍼 잔(와인·막걸리·샴페인) 외곽을 따라 모양을 잡는다.
           liquidShape(SVG path)가 있으면 Figma 액체 모양을 clipPath로 사용한다. */}

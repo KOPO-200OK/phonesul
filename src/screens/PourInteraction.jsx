@@ -57,6 +57,7 @@ export default function PourInteraction() {
   const BOTTLE_EXTRA_DEG = 15
 
   const bottleDeg = BOTTLE_START_DEG + (fillPct / 100) * BOTTLE_EXTRA_DEG
+  const glassStyle = drinkKey === 'beer' ? { left: '52%', transform: 'translateX(-42%)' } : undefined
 
   const stopFilling = useCallback(() => {
     setIsPressing(false)
@@ -216,7 +217,7 @@ export default function PourInteraction() {
               <div className="pour-stream" style={{ height: Math.min(240, 60 + fillPct * 1.8), background: `linear-gradient(to bottom, ${liquidColor}, rgba(255,255,255,.08))` }} />
             )}
             {/* 잔 + 액체(보울 영역 안에서만 차오름) */}
-            <Glass className="glass-pour" drink={drink} level={fillPct} height={160} liquidColor={liquidColor} />
+            <Glass className="glass-pour" style={glassStyle} drink={drink} level={fillPct} height={160} liquidColor={liquidColor} />
             {/* % 배지 */}
             <div className="fill-badge">{Math.round(fillPct)}%</div>
             {/* 화면 터치로 채움 안내 */}
