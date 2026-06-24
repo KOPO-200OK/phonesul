@@ -26,7 +26,7 @@ export const assetUrl = (p) => `${import.meta.env.BASE_URL}assets/${p}`
 // // ASSUMPTION: bowl·clip·glassAspect 값은 각 SVG viewBox/패스에서 도출한 근사값 — 화면에서 미세 튜닝 필요(// REVIEW(기기 확인)).
 //   소주 35×38 / 맥주 73×89(손잡이 제외) / 와인 48×73 / 막걸리 71×54 / 샴페인 28×96.
 export const DRINKS = [
-  { key: 'soju', label: '소주', colors: ['#EFE9DA', '#D9D0BC'], pourFullMs: 2000, viscosity: '묽음', foam: false, celebrate: false,
+  { key: 'soju', label: '소주', colors: ['#D8F2FF', '#B6E3F1'], pourFullMs: 2000, viscosity: '묽음', foam: false, celebrate: false,
   bottle: assetUrl('bottles/soju.png'), bottleOpen: assetUrl('bottles/soju_open.png'), glass: assetUrl('glasses/soju.svg'), glassFilled: assetUrl('glasses_filled/soju.png'), sound: assetUrl('sounds/pour/soju.mp3'), frames: 30,
   glassAspect: 35 / 38,
   bowl: {

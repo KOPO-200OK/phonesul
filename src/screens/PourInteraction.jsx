@@ -15,41 +15,42 @@ import { DRINK_MAP, MODE_MAP } from '../data/presets.js'
 // 채움 타이밍(프로토타입 방식). // ASSUMPTION: 임의값 — 검수·튜닝 단계 조정.
 const FILL_DURATION = 5000 // 0→100% 도달(ms)
 const FILL_INTERVAL = 50
+const STREAM_START_HEIGHT = 36
+const STREAM_MAX_HEIGHT = 220
+const STREAM_STEP = 28
+const STREAM_INTERVAL = 40
 const TAP_DECREASE = 25 // 탭당 감소(%) → 4탭에 비움
-const LONGPRESS_MS = 500 // 길게 누르기 인식
 const EMPTY_HOLD_MS = 2000 // 빈잔 오버레이 노출 후 대기 복귀
-
-// 종류별 액체 색(프로토타입 방식). // ASSUMPTION: 색감은 임의값.
-const LIQUID = {
-  soju: 'rgba(200,230,255,0.78)',
-  beer: 'rgba(220,150,40,0.9)',
-  wine: 'rgba(150,20,50,0.88)',
-  makgeolli: 'rgba(235,228,210,0.94)',
-  champagne: 'rgba(242,216,154,0.9)',
-}
 
 export default function PourInteraction() {
   const navigate = useNavigate()
   const drinkKey = useAppStore((s) => s.drink) ?? 'soju'
   const mode = useAppStore((s) => s.mode)
   const drink = DRINK_MAP[drinkKey] ?? DRINK_MAP.soju
-  const liquidColor = LIQUID[drinkKey] ?? `linear-gradient(180deg, ${drink.colors[0]}, ${drink.colors[1]})`
+  const liquidColor = `linear-gradient(180deg, ${drink.colors[0]}, ${drink.colors[1]})`
   // 점도(종류는 동일 5s) × 모드 속도 배수 유지(F-MD-02/03).
   const fillDuration = FILL_DURATION * (MODE_MAP[mode]?.speed ?? 1)
   const fillPerTick = 100 / (fillDuration / FILL_INTERVAL)
 
   const [phase, setPhase] = useState('idle') // idle | pour | drink
   const [fillPct, setFillPct] = useState(0)
+  const [streamHeight, setStreamHeight] = useState(0)
   const [isPressing, setIsPressing] = useState(false)
   const [kyaVisible, setKyaVisible] = useState(false)
   const [showEmpty, setShowEmpty] = useState(false)
   const [tapLeft, setTapLeft] = useState(4)
 
   const fillRef = useRef(0)
+  const streamRef = useRef(0)
   const tapRef = useRef(4)
-  const pressTimer = useRef(null)
   const fillTimer = useRef(null)
+  const streamTimer = useRef(null)
   const emptyTimer = useRef(null)
+  const pourStreamRef = useRef(null)
+  const glassWrapRef = useRef(null)
+  const targetStreamRef = useRef(null)
+
+  const showPourScreen = phase === 'pour' || (phase !== 'drink' && fillPct > 0) || streamHeight > 0
 
   // 병 기울기: 0%→20deg, 100%→60deg (시계 방향).
   //   최대 60°에서 병 입구가 고정 술줄기(.pour-stream) 윗점과 만나도록 병·줄기 좌표를 맞춤(global.css 주석 참고).
@@ -66,33 +67,110 @@ export default function PourInteraction() {
     stopPourSound()
   }, [])
 
+  const stopStream = useCallback(() => {
+    clearInterval(streamTimer.current)
+    streamTimer.current = null
+  }, [])
+
   const startFilling = useCallback(() => {
-    if (fillTimer.current) return
+    if (fillTimer.current) {
+      clearInterval(fillTimer.current)
+      fillTimer.current = null
+    }
+    if (streamTimer.current) {
+      clearInterval(streamTimer.current)
+      streamTimer.current = null
+    }
     setIsPressing(true)
-    startPourSound(drink.sound) // 소주·맥주 사운드, 나머지 무음(시각 피드백 유지) — 설정·무음 종속(F-SY)
+    setPhase('pour')
+    startPourSound(drink.sound)
     haptic('light')
+    // start with a short stream
+    streamRef.current = STREAM_START_HEIGHT
+    setStreamHeight(STREAM_START_HEIGHT)
+
+    // measure DOM positions after paint to compute exact target height
+    requestAnimationFrame(() => {
+      try {
+        const pourEl = pourStreamRef.current
+        const glassEl = glassWrapRef.current
+        if (pourEl && glassEl) {
+          const pourRect = pourEl.getBoundingClientRect()
+          const svgRect = glassEl.querySelector('.glass-fill-svg rect')?.getBoundingClientRect()
+          const fillElRect = svgRect || glassEl.querySelector('.glass-fill-liquid')?.getBoundingClientRect()
+          if (fillElRect) {
+            const target = Math.max(STREAM_START_HEIGHT, Math.round(fillElRect.top - pourRect.top))
+            targetStreamRef.current = Math.min(STREAM_MAX_HEIGHT, target)
+          } else {
+            targetStreamRef.current = STREAM_MAX_HEIGHT
+          }
+        } else {
+          targetStreamRef.current = STREAM_MAX_HEIGHT
+        }
+      } catch (e) {
+        targetStreamRef.current = STREAM_MAX_HEIGHT
+      }
+
+      // animate stream to the measured target faster than fill speed
+      if (streamTimer.current) {
+        clearInterval(streamTimer.current)
+        streamTimer.current = null
+      }
+      streamTimer.current = setInterval(() => {
+        const tgt = targetStreamRef.current ?? STREAM_MAX_HEIGHT
+        if (streamRef.current < tgt) {
+          streamRef.current = Math.min(tgt, streamRef.current + STREAM_STEP)
+          setStreamHeight(streamRef.current)
+        } else {
+          clearInterval(streamTimer.current)
+          streamTimer.current = null
+        }
+      }, STREAM_INTERVAL)
+    })
+
+    // fill the glass at normal rate
     fillTimer.current = setInterval(() => {
       fillRef.current = Math.min(100, fillRef.current + fillPerTick)
       setFillPct(fillRef.current)
       if (fillRef.current >= 100) {
         stopFilling()
-        setTimeout(() => setPhase('drink'), 300) // 가득 차면 마시기로(넘침 없음)
+        stopStream()
+        setStreamHeight(0)
+        setPhase('drink')
       }
     }, FILL_INTERVAL)
-  }, [drink.sound, fillPerTick, stopFilling])
+  }, [drink.sound, fillPerTick, stopFilling, stopStream])
+
+  const startRetracting = useCallback(() => {
+    if (streamTimer.current) {
+      clearInterval(streamTimer.current)
+      streamTimer.current = null
+    }
+    setIsPressing(false)
+    // retract the stream smoothly back to 0 while preserving fillPct
+    streamTimer.current = setInterval(() => {
+      streamRef.current = Math.max(0, streamRef.current - Math.max(8, Math.round(STREAM_STEP / 2)))
+      setStreamHeight(streamRef.current)
+      if (streamRef.current <= 0) {
+        stopStream()
+        if (fillRef.current <= 0) {
+          setPhase('idle')
+        }
+      }
+    }, STREAM_INTERVAL)
+  }, [stopStream])
 
   const onPressStart = useCallback(() => {
-    if (phase !== 'idle') return
-    pressTimer.current = setTimeout(() => {
-      setPhase('pour')
-      startFilling()
-    }, LONGPRESS_MS)
+    if (phase === 'drink') return
+    startFilling()
   }, [phase, startFilling])
 
   const onPressEnd = useCallback(() => {
-    clearTimeout(pressTimer.current)
-    if (phase === 'pour') stopFilling()
-  }, [phase, stopFilling])
+    if (phase === 'pour' && isPressing) {
+      stopFilling()
+      startRetracting()
+    }
+  }, [phase, isPressing, startRetracting, stopFilling])
 
   const onTapGlass = useCallback(() => {
     if (phase !== 'drink') return
@@ -102,18 +180,18 @@ export default function PourInteraction() {
     tapRef.current = newTap
     setTapLeft(newTap)
     
-    // 액체를 점진적으로 감소 — 50ms마다 8.3%씩 3회에 걸쳐 빠르게 "닳는" 느낌 구현
-    const decaySteps = 3
-    const decayPerStep = TAP_DECREASE / decaySteps // ~8.3%
+    // 액체가 부드럽게 줄어들도록 감소 단계를 세분화.
+    const decaySteps = 8
+    const decayPerStep = TAP_DECREASE / decaySteps
     let stepCount = 0
     const decayInterval = setInterval(() => {
       stepCount++
       fillRef.current = Math.max(0, fillRef.current - decayPerStep)
       setFillPct(fillRef.current)
-      if (stepCount >= decaySteps) {
+      if (stepCount >= decaySteps || fillRef.current <= 0) {
         clearInterval(decayInterval)
       }
-    }, 50)
+    }, 30)
 
     if (newTap === 0) {
       // 비움 완료 → "캬~" → 빈잔 오버레이 → 대기 복귀. (누적 기록 없음 — F-HL 제거)
@@ -148,7 +226,10 @@ export default function PourInteraction() {
     if (!isPressing) return undefined
 
     const handleRelease = () => {
-      if (phase === 'pour') stopFilling()
+      if (phase === 'pour') {
+        stopFilling()
+        startRetracting()
+      }
     }
 
     window.addEventListener('pointerup', handleRelease)
@@ -157,11 +238,10 @@ export default function PourInteraction() {
       window.removeEventListener('pointerup', handleRelease)
       window.removeEventListener('pointercancel', handleRelease)
     }
-  }, [isPressing, phase, stopFilling])
+  }, [isPressing, phase, startRetracting, stopFilling])
 
   // 언마운트 정리 — 누수 방지(비기능: 반복 전환 시 누수 없음).
   useEffect(() => () => {
-    clearTimeout(pressTimer.current)
     clearInterval(fillTimer.current)
     clearTimeout(emptyTimer.current)
     stopPourSound()
@@ -179,9 +259,11 @@ export default function PourInteraction() {
           <div
             className="pour-idle"
             role="button"
-            aria-label="길게 눌러 따르기"
-            onMouseDown={onPressStart} onMouseUp={onPressEnd} onMouseLeave={onPressEnd}
-            onTouchStart={onPressStart} onTouchEnd={onPressEnd}
+            aria-label="누르고 따르기"
+            onPointerDown={onPressStart}
+            onPointerUp={onPressEnd}
+            onPointerLeave={onPressEnd}
+            onPointerCancel={onPressEnd}
             onContextMenu={(e) => e.preventDefault()}
           >
             <div className="idle-bottle-box">
@@ -189,22 +271,22 @@ export default function PourInteraction() {
                 ? <img src={drink.bottle} alt={drink.label} draggable={false} style={{ width: 100, height: 220, objectFit: 'contain', transform: `scale(${drink.bottleScale ?? 1})` }} />
                 : <div className="bottle" style={{ position: 'static' }} />}
             </div>
-            <div style={{ fontSize: 26, fontWeight: 800, marginBottom: 10 }}>길게 눌러 따르기</div>
+            <div style={{ fontSize: 26, fontWeight: 800, marginBottom: 10 }}>누르고 따르기</div>
             <div className="hint" style={{ marginBottom: 28 }}>화면을 누르면 따라져요</div>
-            <div className="lp-chip">Long Press</div>
+            <div className="lp-chip">Press and hold</div>
           </div>
         )}
 
-        {/* ── 따르는 중 ── */}
-        {phase === 'pour' && (
+        {/* ── 따르는/되돌아가는 중 ── */}
+        {showPourScreen && (
           <div
             className="pour-active"
             role="button"
             aria-label="화면을 누르고 따르기"
             onPointerDown={startFilling}
-            onPointerUp={stopFilling}
-            onPointerLeave={stopFilling}
-            onPointerCancel={stopFilling}
+            onPointerUp={onPressEnd}
+            onPointerLeave={onPressEnd}
+            onPointerCancel={onPressEnd}
           >
             {/* 병 — 기울기 20→60deg. 따르는 중엔 뚜껑 열린 병 사용. */}
             <img
@@ -213,11 +295,22 @@ export default function PourInteraction() {
               style={{ transform: `rotate(${bottleDeg.toFixed(1)}deg) scale(${drink.bottleScale ?? 1})` }}
             />
             {/* 술줄기 */}
-            {isPressing && (
-              <div className="pour-stream" style={{ height: Math.min(240, 60 + fillPct * 1.8), background: `linear-gradient(to bottom, ${liquidColor}, rgba(255,255,255,.08))` }} />
-            )}
+            <div
+              className="pour-stream"
+              ref={pourStreamRef}
+              style={{
+                height: streamHeight,
+                background: `linear-gradient(to bottom, ${drink.colors[0]}, ${drink.colors[1]})`,
+                opacity: streamHeight > 0 ? 1 : 0,
+                width: streamHeight > 0 ? 12 : 0,
+              }}
+            >
+              {streamHeight > 0 && <div className="pour-drop" style={{ background: drink.colors[1] }} />}
+            </div>
             {/* 잔 + 액체(보울 영역 안에서만 차오름) */}
-            <Glass className="glass-pour" style={glassStyle} drink={drink} level={fillPct} height={160} liquidColor={liquidColor} />
+            <div className="glass-pour" ref={glassWrapRef} style={glassStyle}>
+              <Glass drink={drink} level={fillPct} height={160} liquidColor={liquidColor} />
+            </div>
             {/* % 배지 */}
             <div className="fill-badge">{Math.round(fillPct)}%</div>
             {/* 화면 터치로 채움 안내 */}
