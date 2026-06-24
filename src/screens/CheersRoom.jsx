@@ -189,7 +189,7 @@ export default function CheersRoom() {
         {/* 중앙: 내 잔 + 짠 연출(기존 잔 연출 재사용) */}
         <div className={`cheers-stage ${flash ? 'is-cheers' : ''}`}>
           <div className="glass-cheers">
-            <Glass drink={drink} level={62} height={140} liquidColor={`linear-gradient(180deg, ${c0}, ${c1})`} />
+            <Glass drink={drink} level={100} height={140} liquidColor={`linear-gradient(180deg, ${c0}, ${c1})`} />
             {flash && <div className="speech">짠!</div>}
           </div>
         </div>
