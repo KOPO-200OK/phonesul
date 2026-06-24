@@ -53,7 +53,10 @@ export default function PourInteraction() {
 
   // 병 기울기: 0%→20deg, 100%→60deg (시계 방향).
   //   최대 60°에서 병 입구가 고정 술줄기(.pour-stream) 윗점과 만나도록 병·줄기 좌표를 맞춤(global.css 주석 참고).
-  const bottleDeg = 20 + (fillPct / 100) * 40
+  const BOTTLE_START_DEG = 45
+  const BOTTLE_EXTRA_DEG = 15
+
+  const bottleDeg = BOTTLE_START_DEG + (fillPct / 100) * BOTTLE_EXTRA_DEG
 
   const stopFilling = useCallback(() => {
     setIsPressing(false)
