@@ -67,25 +67,23 @@ export const DRINKS = [
   } },
   { key: 'makgeolli', label: '막걸리', colors: ['#F4EFE6', '#E3DCCB'], pourFullMs: 2800, viscosity: '걸쭉', foam: false, celebrate: false,
     bottle: assetUrl('bottles/makgeolli.png'), bottleOpen: assetUrl('bottles/makgeolli_open.png'), glass: assetUrl('glasses/makgeolli.svg'), glassFilled: assetUrl('glasses_filled/makgeolli.png'), sound: assetUrl('sounds/pour/soju.mp3'), frames: 0,
-    // 막걸리 병 PNG는 정사각(1254×1254)이라 contain 박스에서 다른 병(비율 0.667)보다 작게 렌더됨 → 보정 확대.
-    // // ASSUMPTION: bottleScale 값은 시각 보정용 임의값 — 화면 확인 후 조정.
-    bottleScale: 1.56,
-    glassAspect: 713 / 54,
-      bowl: {
-        top: 23,
-        bottom: 63,
-        left: 23,
-        right: 78,
-        clip: 'polygon(0% 0%, 100% 0%, 68% 87%, 50% 100%, 32% 87%)'
-      },
-      liquidShape: {
-        viewBox: '0 0 41 26',
-        path: 'M2.09619 0.44441C5.09617 -0.555515 33.0962 0.444413 38.0962 0.44441C43.0962 0.444407 41.0962 19.5277 34.0962 22.4444C27.0961 25.361 17.0962 26.4443 7.59622 22.4444C-1.90375 18.4444 -0.903786 1.44433 2.09619 0.44441Z'
-} },
+    bottleScale: 0.9,
+    glassAspect: 1.2,
+    bowl: {
+      top: 23,
+      bottom: 63,
+      left: 23,
+      right: 78,
+      clip: 'polygon(0% 0%, 100% 0%, 68% 87%, 50% 100%, 32% 87%)'
+    },
+    liquidShape: {
+      viewBox: '0 0 41 26',
+      path: 'M2.09619 0.44441C5.09617 -0.555515 33.0962 0.444413 38.0962 0.44441C43.0962 0.444407 41.0962 19.5277 34.0962 22.4444C27.0961 25.361 17.0962 26.4443 7.59622 22.4444C-1.90375 18.4444 -0.903786 1.44433 2.09619 0.44441Z'
+    } },
   // 샴페인: 새 세트로 병·잔·채워진잔 확보(CSS 폴백 해제). 코르크·뚜껑열린병은 S-05용(champagne/ 배치, 미연결).
   { key: 'champagne', label: '샴페인', colors: ['#F2D89A', '#D9B65E'], pourFullMs: 2400, viscosity: '발포', foam: false, celebrate: true,
   bottle: assetUrl('bottles/champagne.png'), bottleOpen: assetUrl('bottles/champagne_open.png'), glass: assetUrl('glasses/champagne.svg'), glassFilled: assetUrl('glasses_filled/champagne.png'), sound: assetUrl('sounds/pour/beer.mp3'), frames: 0,
-  bottleScale: 1.37,
+  bottleScale: 0.9,
   glassAspect: 28 / 96,
   bowl: {
     top: 2,
