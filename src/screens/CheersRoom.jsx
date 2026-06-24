@@ -1,4 +1,4 @@
-// S-10 건배방(신규) — F-RT-01~07 + F-CH-03(실시간 경로).
+// S-10 건배방(신규) — F-RT-01~07(실시간 건배방).
 //   방 코드 표시·공유 / 인원 목록(roster) / "짠" 버튼 / 연결 상태 / 나가기·방 종료.
 // 짠 연출은 새로 만들지 않고 기존 잔 연출을 재사용한다(기능정의서 v0.3 §5: 에셋 추가 최소화).
 // 정책(중요): 누가 먼저/많이 짰는지 집계·순위·표시 없음 — 동시 축하만(비게임, context §6 / 문서 §4).
@@ -6,8 +6,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import AppHeader from '../components/AppHeader.jsx'
+import Glass from '../components/Glass.jsx'
 import { useAppStore } from '../store/useAppStore.js'
-import { createRoom, createRoomClient } from '../lib/realtimeRoom.js'
+import { createRoom, createRoomClient, closeRoom, roomClosedMessage } from '../lib/realtimeRoom.js'
 import { playSound, haptic } from '../lib/feedback.js'
 import { DRINK_MAP } from '../data/presets.js'
 
@@ -40,11 +41,13 @@ export default function CheersRoom() {
   const [members, setMembers] = useState([])
   const [status, setStatus] = useState('connecting')
   const [errorMsg, setErrorMsg] = useState('')
+  const [closedMsg, setClosedMsg] = useState('') // room_closed 안내(설정 시 방 종료됨)
   const [flash, setFlash] = useState(false)
 
   const clientRef = useRef(null)
   const flashTimerRef = useRef(0)
   const cooldownRef = useRef(0)
+  const hostTokenRef = useRef(null) // 방장만 보관(1회성, 서버 재발급 없음). 종료 REST 호출에 사용.
 
   // 짠 수신(자기 포함 전원 동시) → 잔 연출 + 설정 종속 사운드·진동(F-SY 승계).
   const onCheers = useCallback(() => {
@@ -55,6 +58,12 @@ export default function CheersRoom() {
     flashTimerRef.current = setTimeout(() => setFlash(false), CHEERS_FLASH_MS)
   }, [])
 
+  // 방 종료/만료 수신 → 안내 + 상태 종료(소켓은 client가 정리, 재연결 안 함).
+  const onRoomClosed = useCallback((reason) => {
+    setClosedMsg(roomClosedMessage(reason)) // // REVIEW(문구): 사용자 노출(톤: 음주 권장 없음)
+    setStatus('closed')
+  }, [])
+
   // 연결 수립 — 마운트 시 1회(create면 방 먼저 생성 후 connect).
   useEffect(() => {
     let cancelled = false
@@ -62,6 +71,7 @@ export default function CheersRoom() {
       onStatus: (s) => !cancelled && setStatus(s),
       onRoster: (list) => !cancelled && setMembers(Array.isArray(list) ? list : []),
       onCheers: () => !cancelled && onCheers(),
+      onRoomClosed: (reason) => !cancelled && onRoomClosed(reason),
       onError: (m) => !cancelled && setErrorMsg(m),
     })
     clientRef.current = client
@@ -73,6 +83,7 @@ export default function CheersRoom() {
           const room = await createRoom() // F-RT-01
           if (cancelled) return
           useCode = room.code
+          hostTokenRef.current = room.hostToken // 방장만 보관(이후 종료 REST·재연결에 사용)
           setCode(room.code)
           setIsHost(true)
         }
@@ -81,7 +92,8 @@ export default function CheersRoom() {
           setStatus('error')
           return
         }
-        client.connect(useCode) // F-RT-03 (방장도 동일 경로로 입장)
+        // 방장이면 host_token 부착해 연결(서버 방장 식별), 참여자는 null.
+        client.connect(useCode, hostTokenRef.current)
       } catch (e) {
         if (!cancelled) {
           setErrorMsg(e?.message ?? '방에 연결하지 못했어요')
@@ -125,7 +137,19 @@ export default function CheersRoom() {
     }
   }
 
-  const leave = () => {
+  const leave = async () => {
+    // 이미 종료된 방이면 소켓만 정리하고 나감.
+    if (!closedMsg && isHost) {
+      // 방장 "방 종료" → REST close로 방 자체를 종료(서버가 전원에게 room_closed broadcast).
+      //   leave 메시지는 본인만 퇴장이라 방이 안 닫힘 → 반드시 close 엔드포인트 사용.
+      try {
+        if (hostTokenRef.current) await closeRoom(code, hostTokenRef.current)
+      } catch {
+        // 실패해도 진행 — 서버 유휴 만료에 위임. // REVIEW: 종료 실패 시 사용자 안내 강화 여지.
+      }
+    } else if (!closedMsg) {
+      clientRef.current?.sendLeave() // 참여자 나가기(본인만 퇴장). 방은 유지.
+    }
     clientRef.current?.close()
     navigate('/cheers')
   }
@@ -169,20 +193,14 @@ export default function CheersRoom() {
 
         {/* 중앙: 내 잔 + 짠 연출(기존 잔 연출 재사용) */}
         <div className={`cheers-stage ${flash ? 'is-cheers' : ''}`}>
-          <div className="glass-wrap">
-            <div className="glass-shape">
-              <div className="glass-fill-clip">
-                <div
-                  className="glass-liquid"
-                  style={{ transform: 'scaleY(0.62)', background: `linear-gradient(180deg, ${c0}, ${c1})` }}
-                />
-              </div>
-              {drink.glass ? <img className="glass-img" src={drink.glass} alt="" draggable={false} /> : null}
-            </div>
+          <div className="glass-cheers">
+            <Glass drink={drink} level={62} height={140} liquidColor={`linear-gradient(180deg, ${c0}, ${c1})`} />
             {flash && <div className="speech">짠!</div>}
           </div>
         </div>
 
+        {/* 방 종료/만료 안내(수신 시). 짠 버튼은 연결 종료로 자동 비활성. */}
+        {closedMsg && <p className="hint" aria-live="polite" style={{ color: 'var(--mut)' }}>{closedMsg}</p>}
         {errorMsg && <p className="hint">{errorMsg}</p>}
 
         {/* 하단: 짠 버튼(누구나) */}
@@ -194,7 +212,7 @@ export default function CheersRoom() {
         {/* 종료: 나가기 / (방장)방 종료 — 종료 확인은 헤더 X(F-SY-05) 공통 */}
         <div className="nav-row">
           <button className="btn ghost" onClick={leave}>
-            {isHost ? '방 종료하고 나가기' : '방에서 나가기'}
+            {closedMsg ? '나가기' : isHost ? '방 종료하고 나가기' : '방에서 나가기'}
           </button>
         </div>
       </div>
