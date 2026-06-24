@@ -36,6 +36,12 @@ export default function Glass({ drink, level = 0, height = 160, liquidColor, cla
   const liquidY = vbH * (1 - lvl / 100)
   const liquidH = vbH * (lvl / 100)
 
+  const gradientMatch = typeof liquidColor === 'string'
+    ? liquidColor.match(/linear-gradient\([^,]+,\s*([^,]+?)\s*,\s*([^,]+?)\s*\)/i)
+    : null
+  const svgGradientId = gradientMatch ? `liquid-gradient-${shapeId}` : null
+  const svgFill = gradientMatch ? `url(#${svgGradientId})` : liquidColor
+
   return (
     <div className={`glass-box ${className}`} style={{ width, height, ...style }}>
       {/* 보울 영역(잔 내부)으로 클리핑된 액체 — 이 영역 안에서만 차오름.
@@ -58,6 +64,12 @@ export default function Glass({ drink, level = 0, height = 160, liquidColor, cla
             preserveAspectRatio="none"
           >
             <defs>
+              {gradientMatch && (
+                <linearGradient id={svgGradientId} x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor={gradientMatch[1].trim()} />
+                  <stop offset="100%" stopColor={gradientMatch[2].trim()} />
+                </linearGradient>
+              )}
               <clipPath id={`liquid-shape-${shapeId}`} clipPathUnits="userSpaceOnUse">
                 <path d={shape.path} />
               </clipPath>
@@ -68,7 +80,7 @@ export default function Glass({ drink, level = 0, height = 160, liquidColor, cla
               y={liquidY}
               width={vbW}
               height={liquidH}
-              fill={liquidColor}
+              fill={svgFill}
               clipPath={`url(#liquid-shape-${shapeId})`}
             />
           </svg>
