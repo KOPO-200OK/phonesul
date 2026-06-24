@@ -1,7 +1,6 @@
-// S-06 건배 요청 — 개정(기능정의서 v0.3 §5).
-//   기존: 비동기 공유 링크 '짠'(F-CH-01/02) — 폴백으로 유지.
-//   추가: "건배방 만들기"(F-RT-01) · "코드로 참여"(F-RT-03) 실시간 경로 진입.
-//   // UNVERIFIED: getTossShareLink / share 실제 동작 — 앱인토스 SDK(MCP/공식문서) 확인 필요.
+// S-06 건배 요청 — 기능정의서 v0.3 §5(실시간 건배방 F-RT 전용).
+//   "건배방 만들기"(F-RT-01) · "코드로 참여"(F-RT-03)로 실시간 방(S-10) 진입.
+//   v0.3에서 비동기 공유 링크 '짠'(구 F-CH) 제거 — 링크 경로 없음(context §1·§2.1).
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppHeader from '../components/AppHeader.jsx'
@@ -25,7 +24,7 @@ export default function CheersRequest() {
         <div className="card-block">
           <div className="card-label">여럿이 실시간으로</div>
           <p className="hint">방을 만들고 코드를 나누면, 함께 동시에 ‘짠’</p>
-          <button className="btn primary" onClick={createRoom}>건배방 만들기</button>
+          <button className="btn amber" onClick={createRoom}>건배방 만들기</button>
           <div className="join-row">
             <input
               className="code-input"
@@ -38,14 +37,6 @@ export default function CheersRequest() {
             />
             <button className="btn ghost" onClick={joinRoom} disabled={!code.trim()}>코드로 참여</button>
           </div>
-        </div>
-
-        {/* 비동기 링크 '짠'(멀리 있는 친구) — 폴백 유지(F-CH-03) */}
-        <div className="card-block">
-          <div className="card-label">멀리 있는 친구와</div>
-          <p className="hint">링크를 보내면, 친구가 열 때 양쪽에서 ‘짠’</p>
-          {/* TODO(후속): getTossShareLink → share 실제 연결 */}
-          <button className="btn ghost" disabled>건배 링크 만들기 (준비 중)</button>
         </div>
       </div>
     </div>
