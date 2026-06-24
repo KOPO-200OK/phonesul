@@ -27,20 +27,23 @@ export const assetUrl = (p) => `${import.meta.env.BASE_URL}assets/${p}`
 //   소주 35×38 / 맥주 73×89(손잡이 제외) / 와인 48×73 / 막걸리 71×54 / 샴페인 28×96.
 export const DRINKS = [
   { key: 'soju', label: '소주', colors: ['#EFE9DA', '#D9D0BC'], pourFullMs: 2000, viscosity: '묽음', foam: false, celebrate: false,
-    bottle: assetUrl('bottles/soju.png'), glass: assetUrl('glasses/soju.svg'), glassFilled: assetUrl('glasses_filled/soju.png'), sound: assetUrl('sounds/pour/soju.mp3'), frames: 30,
+    bottle: assetUrl('bottles/soju.png'), bottleOpen: assetUrl('bottles/soju_open.png'), glass: assetUrl('glasses/soju.svg'), glassFilled: assetUrl('glasses_filled/soju.png'), sound: assetUrl('sounds/pour/soju.mp3'), frames: 30,
     glassAspect: 35 / 38, bowl: { top: 11, bottom: 89, left: 13, right: 87 } },
   { key: 'beer', label: '맥주', colors: ['#E8B96A', '#C8893F'], pourFullMs: 2200, viscosity: '보통', foam: true, celebrate: false,
-    bottle: assetUrl('bottles/beer.png'), glass: assetUrl('glasses/beer.svg'), glassFilled: assetUrl('glasses_filled/beer.png'), sound: assetUrl('sounds/pour/beer.mp3'), frames: 0,
+    bottle: assetUrl('bottles/beer.png'), bottleOpen: assetUrl('bottles/beer_open.png'), glass: assetUrl('glasses/beer.svg'), glassFilled: assetUrl('glasses_filled/beer.png'), sound: assetUrl('sounds/pour/beer.mp3'), frames: 0,
     glassAspect: 73 / 89, bowl: { top: 7, bottom: 96, left: 5, right: 68 } },
   { key: 'wine', label: '와인', colors: ['#9b3050', '#6e1f3a'], pourFullMs: 2600, viscosity: '중간', foam: false, celebrate: false,
-    bottle: assetUrl('bottles/wine.png'), glass: assetUrl('glasses/wine.svg'), glassFilled: assetUrl('glasses_filled/wine.png'), sound: null, frames: 0,
+    bottle: assetUrl('bottles/wine.png'), bottleOpen: assetUrl('bottles/wine_open.png'), glass: assetUrl('glasses/wine.svg'), glassFilled: assetUrl('glasses_filled/wine.png'), sound: assetUrl('sounds/pour/soju.mp3'), frames: 0,
     glassAspect: 48 / 73, bowl: { top: 2, bottom: 59, left: 2, right: 98, clip: 'polygon(10% 0%, 92% 0%, 100% 40%, 51% 100%, 0% 40%)' } },
   { key: 'makgeolli', label: '막걸리', colors: ['#F4EFE6', '#E3DCCB'], pourFullMs: 2800, viscosity: '걸쭉', foam: false, celebrate: false,
-    bottle: assetUrl('bottles/makgeolli.png'), glass: assetUrl('glasses/makgeolli.svg'), glassFilled: assetUrl('glasses_filled/makgeolli.png'), sound: null, frames: 0,
+    bottle: assetUrl('bottles/makgeolli.png'), bottleOpen: assetUrl('bottles/makgeolli_open.png'), glass: assetUrl('glasses/makgeolli.svg'), glassFilled: assetUrl('glasses_filled/makgeolli.png'), sound: assetUrl('sounds/pour/soju.mp3'), frames: 0,
+    // 막걸리 병 PNG는 정사각(1254×1254)이라 contain 박스에서 다른 병(비율 0.667)보다 작게 렌더됨 → 보정 확대.
+    // // ASSUMPTION: bottleScale 값은 시각 보정용 임의값 — 화면 확인 후 조정.
+    bottleScale: 1.3,
     glassAspect: 71 / 54, bowl: { top: 23, bottom: 87, left: 21, right: 79, clip: 'polygon(0% 0%, 100% 0%, 68% 87%, 50% 100%, 32% 87%)' } },
   // 샴페인: 새 세트로 병·잔·채워진잔 확보(CSS 폴백 해제). 코르크·뚜껑열린병은 S-05용(champagne/ 배치, 미연결).
   { key: 'champagne', label: '샴페인', colors: ['#F2D89A', '#D9B65E'], pourFullMs: 2400, viscosity: '발포', foam: false, celebrate: true,
-    bottle: assetUrl('bottles/champagne.png'), glass: assetUrl('glasses/champagne.svg'), glassFilled: assetUrl('glasses_filled/champagne.png'), sound: null, frames: 0,
+    bottle: assetUrl('bottles/champagne.png'), bottleOpen: assetUrl('bottles/champagne_open.png'), glass: assetUrl('glasses/champagne.svg'), glassFilled: assetUrl('glasses_filled/champagne.png'), sound: assetUrl('sounds/pour/beer.mp3'), frames: 0,
     glassAspect: 28 / 96, bowl: { top: 2, bottom: 63, left: 7, right: 92, clip: 'polygon(0% 0%, 100% 0%, 56% 100%, 41% 100%)' } },
 ]
 export const DRINK_MAP = Object.fromEntries(DRINKS.map((d) => [d.key, d]))
@@ -52,7 +55,7 @@ export const sojuFrameUrl = (n) => assetUrl(`pour/soju/frame_${String(n).padStar
 // speed = 따르기 시간 배수(>1 느림 / <1 빠름).
 // // ASSUMPTION: 속도 배수·톤 라벨은 임의값. 분위기 연출에 한정(폭음·원샷 강요 톤 금지).
 export const MODES = [
-  { key: 'solo', label: '혼술 모드', cap: '잔잔한 BGM · 천천히 음미', speed: 1.25, tone: 'calm' },
-  { key: 'party', label: '술자리 모드', cap: '활기찬 분위기', speed: 0.8, tone: 'lively' },
+  { key: 'solo', label: '혼술 모드', cap: '잔잔한 BGM · 천천히 음미', speed: 1.25, tone: 'calm', bgm: assetUrl('sounds/bgm/calm.mp3') },
+  { key: 'party', label: '술자리 모드', cap: '활기찬 분위기 · 건배방 이용 가능', speed: 0.8, tone: 'lively', bgm: assetUrl('sounds/bgm/lively.mp3') },
 ]
 export const MODE_MAP = Object.fromEntries(MODES.map((m) => [m.key, m]))

@@ -35,6 +35,7 @@ export default function CheersRoom() {
   const drinkKey = useAppStore((s) => s.drink) ?? 'soju'
   const drink = DRINK_MAP[drinkKey] ?? DRINK_MAP.soju
   const [c0, c1] = drink.colors
+  const mode = useAppStore((s) => s.mode) // 건배방은 술자리 모드 전용
 
   const [code, setCode] = useState(action === 'join' ? joinCode : '')
   const [isHost, setIsHost] = useState(action === 'create')
@@ -66,6 +67,11 @@ export default function CheersRoom() {
 
   // 연결 수립 — 마운트 시 1회(create면 방 먼저 생성 후 connect).
   useEffect(() => {
+    // 술자리 모드가 아니면 방 생성/연결 없이 따르기로 복귀(직접 진입 차단).
+    if (mode !== 'party') {
+      navigate('/pour', { replace: true })
+      return
+    }
     let cancelled = false
     const client = createRoomClient({
       onStatus: (s) => !cancelled && setStatus(s),
