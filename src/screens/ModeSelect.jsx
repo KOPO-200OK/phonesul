@@ -4,10 +4,14 @@
 import { useNavigate } from 'react-router-dom'
 import AppHeader from '../components/AppHeader.jsx'
 import { useAppStore } from '../store/useAppStore.js'
-import { MODES } from '../data/presets.js'
+import { MODES, assetUrl } from '../data/presets.js'
 
 // 모드 아이콘(연출용). 키는 presets.js MODES 기준(solo/party).
-const MODE_ICON = { solo: '🌙', party: '🎵' }
+// PNG 에셋을 사용해 레퍼런스처럼 아이콘을 카드 중앙 상단에 배치한다.
+const MODE_ICON = {
+  solo: 'icons/moon.png',
+  party: 'icons/music-note.png',
+}
 
 export default function ModeSelect() {
   const navigate = useNavigate()
@@ -22,21 +26,26 @@ export default function ModeSelect() {
   return (
     <div className="screen">
       <AppHeader title="오늘은 어떻게?" showBack={false} />
-      <div className="screen-body">
+      <div className="screen-body mode-select-body">
         {MODES.map((m) => (
           <button
             key={m.key}
             className={`card mode-card ${current === m.key ? 'card-on' : ''}`}
             onClick={() => pick(m.key)}
+            type="button"
           >
-            <span className="mode-ico">{MODE_ICON[m.key] ?? '🥂'}</span>
-            <span>
-              <span className="card-label" style={{ display: 'block' }}>{m.label}</span>
-              <span className="card-cap">{m.cap}</span>
-            </span>
+            <img
+              className={`mode-icon-img ${m.key === 'solo' ? 'moon' : 'note'}`}
+              src={assetUrl(MODE_ICON[m.key])}
+              alt=""
+              draggable={false}
+            />
+
+            <span className="card-label" style={{ display: 'block' }}>{m.label}</span>
+            <span className="card-cap">{m.cap}</span>
           </button>
         ))}
-        <p className="hint center" style={{ marginTop: 16 }}>언제든 설정에서 바꿀 수 있어요</p>
+        <p className="hint center mode-help">언제든 설정에서 바꿀 수 있어요</p>
       </div>
     </div>
   )

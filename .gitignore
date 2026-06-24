@@ -11,6 +11,8 @@
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 Icon?
+!public/assets/icons/
+!public/assets/icons/**
 
 # ===== Node =====
 node_modules/
