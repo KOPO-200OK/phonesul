@@ -100,8 +100,19 @@ export default function PourInteraction() {
     const newTap = Math.max(0, tapRef.current - 1)
     tapRef.current = newTap
     setTapLeft(newTap)
-    fillRef.current = Math.max(0, fillRef.current - TAP_DECREASE)
-    setFillPct(fillRef.current)
+    
+    // 액체를 점진적으로 감소 — 50ms마다 8.3%씩 3회에 걸쳐 빠르게 "닳는" 느낌 구현
+    const decaySteps = 3
+    const decayPerStep = TAP_DECREASE / decaySteps // ~8.3%
+    let stepCount = 0
+    const decayInterval = setInterval(() => {
+      stepCount++
+      fillRef.current = Math.max(0, fillRef.current - decayPerStep)
+      setFillPct(fillRef.current)
+      if (stepCount >= decaySteps) {
+        clearInterval(decayInterval)
+      }
+    }, 50)
 
     if (newTap === 0) {
       // 비움 완료 → "캬~" → 빈잔 오버레이 → 대기 복귀. (누적 기록 없음 — F-HL 제거)
@@ -130,6 +141,22 @@ export default function PourInteraction() {
   // 모드별 BGM 시작(혼술=잔잔 / 술자리=신나는). 사운드 설정·무음/백그라운드 정책은 audioPolicy가 처리.
   //   언마운트해도 멈추지 않음(건배·축하 화면까지 이어짐). 정지는 종료/백그라운드/사운드 Off에서.
   useEffect(() => { startBgm(mode) }, [mode])
+
+  // 누르고 있다가 해제하면 반드시 채움 중지.
+  useEffect(() => {
+    if (!isPressing) return undefined
+
+    const handleRelease = () => {
+      if (phase === 'pour') stopFilling()
+    }
+
+    window.addEventListener('pointerup', handleRelease)
+    window.addEventListener('pointercancel', handleRelease)
+    return () => {
+      window.removeEventListener('pointerup', handleRelease)
+      window.removeEventListener('pointercancel', handleRelease)
+    }
+  }, [isPressing, phase, stopFilling])
 
   // 언마운트 정리 — 누수 방지(비기능: 반복 전환 시 누수 없음).
   useEffect(() => () => {
@@ -169,7 +196,15 @@ export default function PourInteraction() {
 
         {/* ── 따르는 중 ── */}
         {phase === 'pour' && (
-          <div className="pour-active">
+          <div
+            className="pour-active"
+            role="button"
+            aria-label="화면을 누르고 따르기"
+            onPointerDown={startFilling}
+            onPointerUp={stopFilling}
+            onPointerLeave={stopFilling}
+            onPointerCancel={stopFilling}
+          >
             {/* 병 — 기울기 20→60deg. 따르는 중엔 뚜껑 열린 병 사용. */}
             <img
               src={drink.bottleOpen ?? drink.bottle} alt={drink.label} draggable={false}
@@ -184,15 +219,8 @@ export default function PourInteraction() {
             <Glass className="glass-pour" drink={drink} level={fillPct} height={160} liquidColor={liquidColor} />
             {/* % 배지 */}
             <div className="fill-badge">{Math.round(fillPct)}%</div>
-            {/* 누르기 버튼(홀드로 채움) */}
-            <button
-              className="hold-btn"
-              aria-label="누르기"
-              onMouseDown={startFilling} onMouseUp={stopFilling} onMouseLeave={stopFilling}
-              onTouchStart={(e) => { e.preventDefault(); startFilling() }}
-              onTouchEnd={(e) => { e.preventDefault(); stopFilling() }}
-            >누르기</button>
-            <div className="pour-cap">누르는 동안 차오름</div>
+            {/* 화면 터치로 채움 안내 */}
+            <div className="pour-tip" aria-hidden="true">누르는 동안 차오름</div>
           </div>
         )}
 

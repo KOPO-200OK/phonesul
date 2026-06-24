@@ -103,8 +103,68 @@ body {
 .card-cap { font-size: 13px; color: var(--mut); margin-top: 6px; }
 
 /* 모드 선택 카드(아이콘 + 텍스트) */
-.mode-card { display: flex; align-items: center; gap: 20px; padding: 24px 20px; margin-bottom: 16px; }
-.mode-ico { font-size: 36px; }
+.mode-select-body {
+  padding: 24px 12px 0;
+  gap: 18px;
+  overflow: hidden;
+}
+
+.mode-card {
+  height: 155px;
+  margin-bottom: 0;
+  padding: 22px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  text-align: center;
+  border-radius: 14px;
+  background: var(--card);
+}
+
+/* 레퍼런스처럼 선택 테두리는 보이지 않게 처리 */
+.mode-card.card-on {
+  box-shadow: none;
+}
+
+.mode-icon-img {
+  display: block;
+  object-fit: contain;
+  margin-bottom: 4px;
+  pointer-events: none;
+}
+
+.mode-icon-img.moon {
+  width: 30px;
+  height: 29px;
+}
+
+.mode-icon-img.note {
+  width: 23px;
+  height: 31px;
+}
+
+.mode-card .card-label {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.mode-card .card-cap {
+  display: block;
+  margin-top: 0;
+  font-size: 13px;
+  color: var(--mut);
+}
+
+.mode-help {
+  margin-top: 10px;
+  font-size: 13px;
+}
 
 /* 술 선택 그리드 */
 .drink-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -160,7 +220,7 @@ body {
 /* 따르는 병 — 회전축=바닥 중앙(32,270). 최대 60° 회전 시 입구가
    (32+180·sin60, 270−180·cos60) ≈ (188,180)=화면 가로 중앙 → 술줄기(.pour-stream) 윗점과 만남. */
 .pour-bottle {
-  position: absolute; left: 160px; top: 140px; width: 90px; height: 180px; object-fit: contain;
+  position: absolute; left: 150px; top: 130px; width: 115px; height: 230px; object-fit: contain;
   transform-origin: 50% 8%;; transition: transform 80ms linear;
   filter: drop-shadow(0 8px 24px rgba(0,0,0,.5));
 }
@@ -177,18 +237,24 @@ body {
   display: block;
 }
 .glass-fill { position: absolute; overflow: hidden; z-index: 1; border-radius: 0 0 6px 6px; }
-.glass-fill-liquid { position: absolute; left: 0; right: 0; bottom: 0; transition: height 120ms linear; }
+.glass-fill-liquid { position: absolute; left: 0; right: 0; bottom: 0; transition: height 100ms linear; }
 .glass-box-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: 2; pointer-events: none; }
 /* 따르기 화면 잔 — 화면 가로 중앙(=술줄기 낙하점). 누르기 버튼과 간격 확보 위해 위로(bottom 200). */
 .glass-pour { position: absolute; left: 50%; transform: translateX(-50%); bottom: 200px; }
-.hold-btn {
-  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-  width: 64px; height: 64px; border-radius: 50%; border: none; cursor: pointer;
-  background: radial-gradient(circle at 35% 35%, #ffe580, var(--gold));
-  box-shadow: 0 4px 20px rgba(245,200,66,.5);
-  font-size: 12px; font-weight: 700; color: #333;
+.pour-tip {
+  position: absolute;
+  bottom: 130px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+  pointer-events: none;
 }
-/* "누르는 동안 차오름" — 누르기 버튼(하단 중앙) 좌측에 세로 가운데 정렬(잔·버튼과 겹침 방지). */
+/* "누르는 동안 차오름" — 터치 힌트 텍스트. */
 .pour-cap { position: absolute; bottom: 54px; left: 12px; right: calc(50% + 44px); text-align: right; font-size: 13px; color: rgba(255,255,255,.4); }
 
 /* 마시기 */

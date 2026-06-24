@@ -40,8 +40,18 @@ export const DRINKS = [
     path: 'M0.179688 2.56562C1.17969 -0.934381 28.6797 -0.934377 29.6797 3.06561C30.4169 6.01439 28.4368 19.8324 27.3451 26.8915C26.9716 29.307 24.8882 31.0656 22.444 31.0656H7.02845C4.53487 31.0656 2.42486 29.2368 2.10414 26.764C1.1562 19.455 -0.558661 5.14984 0.179688 2.56562Z'
   } },
   { key: 'beer', label: '맥주', colors: ['#E8B96A', '#C8893F'], pourFullMs: 2200, viscosity: '보통', foam: true, celebrate: false,
-    bottle: assetUrl('bottles/beer.png'), bottleOpen: assetUrl('bottles/beer_open.png'), glass: assetUrl('glasses/beer.svg'), glassFilled: assetUrl('glasses_filled/beer.png'), sound: assetUrl('sounds/pour/beer.mp3'), frames: 0,
-    glassAspect: 73 / 89, bowl: { top: 7, bottom: 96, left: 5, right: 68 } },
+  bottle: assetUrl('bottles/beer.png'), bottleOpen: assetUrl('bottles/beer_open.png'), glass: assetUrl('glasses/beer.svg'), glassFilled: assetUrl('glasses_filled/beer.png'), sound: assetUrl('sounds/pour/beer.mp3'), frames: 0,
+  glassAspect: 73 / 89,
+  bowl: {
+    top: 7,
+    bottom: 96,
+    left: 7.5,
+    right: 68
+  },
+  liquidShape: {
+    viewBox: '0 0 48 87',
+    path: 'M0.374382 5.88824C0.411813 2.60456 3.08461 0 6.36851 0H40.5602C43.8284 0 46.4939 2.57957 46.5507 5.84724C46.8647 23.9171 47.6917 77.9267 46.4445 82.5C44.9445 88 1.44445 86.5 0.444445 82.5C-0.38806 79.17 0.165561 24.2073 0.374382 5.88824Z'
+  }},
   { key: 'wine', label: '와인', colors: ['#9b3050', '#6e1f3a'], pourFullMs: 2600, viscosity: '중간', foam: false, celebrate: false,
       bottle: assetUrl('bottles/wine.png'), bottleOpen: assetUrl('bottles/wine_open.png'), glass: assetUrl('glasses/wine.svg'), glassFilled: assetUrl('glasses_filled/wine.png'), sound: assetUrl('sounds/pour/soju.mp3'), frames: 0,
       glassAspect: 48 / 73,
@@ -59,8 +69,8 @@ export const DRINKS = [
     bottle: assetUrl('bottles/makgeolli.png'), bottleOpen: assetUrl('bottles/makgeolli_open.png'), glass: assetUrl('glasses/makgeolli.svg'), glassFilled: assetUrl('glasses_filled/makgeolli.png'), sound: assetUrl('sounds/pour/soju.mp3'), frames: 0,
     // 막걸리 병 PNG는 정사각(1254×1254)이라 contain 박스에서 다른 병(비율 0.667)보다 작게 렌더됨 → 보정 확대.
     // // ASSUMPTION: bottleScale 값은 시각 보정용 임의값 — 화면 확인 후 조정.
-    bottleScale: 1.3,
-    glassAspect: 71 / 54,
+    bottleScale: 1.56,
+    glassAspect: 713 / 54,
       bowl: {
         top: 23,
         bottom: 63,
@@ -75,6 +85,7 @@ export const DRINKS = [
   // 샴페인: 새 세트로 병·잔·채워진잔 확보(CSS 폴백 해제). 코르크·뚜껑열린병은 S-05용(champagne/ 배치, 미연결).
   { key: 'champagne', label: '샴페인', colors: ['#F2D89A', '#D9B65E'], pourFullMs: 2400, viscosity: '발포', foam: false, celebrate: true,
   bottle: assetUrl('bottles/champagne.png'), bottleOpen: assetUrl('bottles/champagne_open.png'), glass: assetUrl('glasses/champagne.svg'), glassFilled: assetUrl('glasses_filled/champagne.png'), sound: assetUrl('sounds/pour/beer.mp3'), frames: 0,
+  bottleScale: 1.37,
   glassAspect: 28 / 96,
   bowl: {
     top: 2,

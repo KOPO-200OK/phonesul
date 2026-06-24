@@ -29,7 +29,7 @@ export default function Splash() {
   return (
     <div className="screen center">
       <img className="logo-img" src={assetUrl('logo/phonesul.png')} alt="폰술" draggable={false} />
-      <div className="logo">폰술</div>
+      <div className="logo"></div>
       <p className="slogan">마시지 않고, 분위기만</p>
 
       {/* 로딩 바(차오르면 자동 진입) */}
