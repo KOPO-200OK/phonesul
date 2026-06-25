@@ -45,3 +45,37 @@ export async function closeMiniApp() {
     return false
   }
 }
+
+// 진입 딥링크(getSchemeUri) — 공유 링크로 들어온 경우 그 URI 문자열을 반환. 없으면 null.
+//   '처음 진입한 스킴'만 반환되며(페이지 이동 반영 안 됨), 비-토스는 null.
+export async function getLaunchScheme() {
+  try {
+    const { getSchemeUri } = await import('@apps-in-toss/web-framework')
+    return getSchemeUri() // 예: 'intoss://phonesul?code=ABC123'
+  } catch {
+    return null
+  }
+}
+
+// 진입 딥링크에서 건배방 코드 추출(F-RT-02 공유 자동입장). 쿼리 ?code= 파싱. 없으면 null.
+export async function getLaunchRoomCode() {
+  const uri = await getLaunchScheme()
+  if (!uri || uri.indexOf('?') === -1) return null
+  try {
+    const code = new URLSearchParams(uri.slice(uri.indexOf('?') + 1)).get('code')
+    return code ? code.trim() || null : null
+  } catch {
+    return null
+  }
+}
+
+// 네트워크 상태(getNetworkStatus) — 'OFFLINE'|'WIFI'|'2G'|...|'UNKNOWN'. 비-토스는 'UNKNOWN'.
+//   wss 끊김 시 "네트워크 문제 vs 서버 문제" 구분 안내에 사용(F-RT-07).
+export async function getNetwork() {
+  try {
+    const { getNetworkStatus } = await import('@apps-in-toss/web-framework')
+    return await getNetworkStatus()
+  } catch {
+    return 'UNKNOWN'
+  }
+}

@@ -11,6 +11,7 @@ import { useAppStore } from '../store/useAppStore.js'
 import { createRoom, createRoomClient, closeRoom, roomClosedMessage } from '../lib/realtimeRoom.js'
 import { playSound, haptic } from '../lib/feedback.js'
 import { shareRoomCode } from '../lib/share.js'
+import { getNetwork } from '../lib/platform.js'
 import { DRINK_MAP } from '../data/presets.js'
 
 // 짠 연출 노출 시간(ms). // ASSUMPTION: 임의값 — 시각 확인 후 조정.
@@ -45,6 +46,7 @@ export default function CheersRoom() {
   const [errorMsg, setErrorMsg] = useState('')
   const [closedMsg, setClosedMsg] = useState('') // room_closed 안내(설정 시 방 종료됨)
   const [flash, setFlash] = useState(false)
+  const [netHint, setNetHint] = useState('') // 끊김 시 네트워크 문제 안내(F-RT-07)
 
   const clientRef = useRef(null)
   const flashTimerRef = useRef(0)
@@ -65,6 +67,19 @@ export default function CheersRoom() {
     setClosedMsg(roomClosedMessage(reason)) // // REVIEW(문구): 사용자 노출(톤: 음주 권장 없음)
     setStatus('closed')
   }, [])
+
+  // 끊김/재연결 시 네트워크 상태 확인 → OFFLINE 이면 네트워크 문제 안내(서버 문제와 구분, F-RT-07).
+  useEffect(() => {
+    if (status !== 'error' && status !== 'reconnecting') {
+      setNetHint('')
+      return
+    }
+    let cancelled = false
+    getNetwork().then((net) => {
+      if (!cancelled) setNetHint(net === 'OFFLINE' ? '네트워크 연결을 확인해 주세요' : '')
+    })
+    return () => { cancelled = true }
+  }, [status])
 
   // 연결 수립 — 마운트 시 1회(create면 방 먼저 생성 후 connect).
   useEffect(() => {
@@ -197,6 +212,7 @@ export default function CheersRoom() {
         {/* 방 종료/만료 안내(수신 시). 짠 버튼은 연결 종료로 자동 비활성. */}
         {closedMsg && <p className="hint" aria-live="polite" style={{ color: 'var(--mut)' }}>{closedMsg}</p>}
         {errorMsg && <p className="hint">{errorMsg}</p>}
+        {netHint && <p className="hint" aria-live="polite">{netHint}</p>}
 
         {/* 하단: 짠 버튼(누구나) */}
         <button className="btn primary" onClick={sendCheers} disabled={!connected}>

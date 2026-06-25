@@ -10,8 +10,8 @@
 // // REVIEW(노출 동작): 공유 메시지·딥링크 경로는 사용자 노출 — 문구·링크 검수.
 // // UNVERIFIED: 토스 WebView 실기기에서 share/getTossShareLink 실제 동작·권한 — 샌드박스 확인.
 
-// // ASSUMPTION: 받는 사람이 폰술 진입 후 코드를 직접 입력하는 흐름(코드 텍스트 동봉).
-//   코드까지 실어 자동 입장시키는 딥링크(intoss://phonesul/cheers?code=...)는 후속(런치 스킴 파싱 필요).
+// 코드를 딥링크 쿼리에 실어(intoss://phonesul?code=...) 받는 사람이 진입 시 자동 입장한다
+//   (런치 스킴 파싱은 platform.getLaunchRoomCode → Splash 에서 처리). 텍스트에도 코드 동봉(폴백·수동 입력용).
 const APP_SCHEME = 'intoss://phonesul'
 
 /**
@@ -26,7 +26,7 @@ export async function shareRoomCode(code) {
   // 1) 앱인토스 SDK (실기기 토스 WebView)
   try {
     const { share, getTossShareLink } = await import('@apps-in-toss/web-framework')
-    const link = await getTossShareLink(APP_SCHEME)
+    const link = await getTossShareLink(`${APP_SCHEME}?code=${encodeURIComponent(code)}`)
     await share({ message: `${text}\n${link}` })
     return { ok: true, mode: 'toss' }
   } catch {
