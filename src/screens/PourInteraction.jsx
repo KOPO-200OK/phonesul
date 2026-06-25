@@ -84,7 +84,6 @@ export default function PourInteraction() {
     setIsPressing(true)
     setPhase('pour')
     startPourSound(drink.sound)
-    haptic('light')
     // start with a short stream
     streamRef.current = STREAM_START_HEIGHT
     setStreamHeight(STREAM_START_HEIGHT)
@@ -136,6 +135,7 @@ export default function PourInteraction() {
         stopFilling()
         stopStream()
         setStreamHeight(0)
+        haptic('medium') // 잔 100% 충전 완료 시 진동
         setPhase('drink')
       }
     }, FILL_INTERVAL)
@@ -175,7 +175,6 @@ export default function PourInteraction() {
   const onTapGlass = useCallback(() => {
     if (phase !== 'drink') return
     playSound('gulp')
-    haptic('medium')
     const newTap = Math.max(0, tapRef.current - 1)
     tapRef.current = newTap
     setTapLeft(newTap)
