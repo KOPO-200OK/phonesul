@@ -5,6 +5,7 @@
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { installAudioPolicy } from './lib/audioPolicy.js'
+import { setScreenAwake, getEnv } from './lib/platform.js'
 
 import Splash from './screens/Splash.jsx'
 import ModeSelect from './screens/ModeSelect.jsx'
@@ -24,6 +25,18 @@ export default function App() {
 
   // F-SY-04: 백그라운드/복귀 사운드 정책(visibilitychange) 설치. 시스템 자동 동작.
   useEffect(() => installAudioPolicy(), [])
+
+  // 화면 항상 켜짐: 따르기 연출·건배방 대기 중 화면 sleep 방지. 언마운트 시 복구(SDK 주석).
+  //   비-토스(데스크톱/브라우저)는 no-op. 실기기 토스 WebView에서만 적용.
+  useEffect(() => {
+    setScreenAwake(true)
+    return () => { setScreenAwake(false) }
+  }, [])
+
+  // 운영 환경 확인(toss/sandbox/web) — 디버그 로그 + 향후 env 분기용(ALLOWED_ORIGINS 등).
+  useEffect(() => {
+    getEnv().then((env) => { if (import.meta.env.DEV) console.debug('[env]', env) })
+  }, [])
 
   return (
     <ExitModalContext.Provider value={{ openExit: () => setExitOpen(true) }}>

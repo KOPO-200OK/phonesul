@@ -21,7 +21,7 @@ export default function Celebrate() {
     poppedRef.current = true
     setCorkFlying(true)
     playSound('pop')
-    haptic('strong')
+    haptic('pop') // 샴페인 축포 — wiggle(흔들리듯)
     setTimeout(() => {
       setPopped(true)
       setTimeout(() => navigate('/pour'), 1500) // 연출 후 S-04 복귀

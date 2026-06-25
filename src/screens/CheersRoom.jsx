@@ -55,7 +55,7 @@ export default function CheersRoom() {
   const onCheers = useCallback(() => {
     setFlash(true)
     playSound('clink') // F-SY-01: 사운드 Off/무음이면 feedback.js가 자동 억제
-    haptic('medium') // F-SY-02: 진동 Off면 호출 안 함(시각 피드백은 유지)
+    haptic('strong') // 건배 짠 — 강하게. F-SY-02: 진동 Off면 호출 안 함(시각 피드백은 유지)
     clearTimeout(flashTimerRef.current)
     flashTimerRef.current = setTimeout(() => setFlash(false), CHEERS_FLASH_MS)
   }, [])

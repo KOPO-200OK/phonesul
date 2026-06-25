@@ -135,7 +135,7 @@ export default function PourInteraction() {
         stopFilling()
         stopStream()
         setStreamHeight(0)
-        haptic('medium') // 잔 100% 충전 완료 시 진동
+        haptic('strong') // 잔 100% 충전 완료 시 진동(강하게)
         setPhase('drink')
       }
     }, FILL_INTERVAL)
