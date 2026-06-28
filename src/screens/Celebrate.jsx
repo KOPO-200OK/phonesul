@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
 import AppHeader from '../components/AppHeader.jsx'
 import { useAppStore } from '../store/useAppStore.js'
-import { playSound, haptic } from '../lib/feedback.js'
+import { haptic } from '../lib/feedback.js'
 import { assetUrl } from '../data/presets.js'
 
 export default function Celebrate() {
@@ -20,7 +20,6 @@ export default function Celebrate() {
     if (poppedRef.current) return
     poppedRef.current = true
     setCorkFlying(true)
-    playSound('pop')
     haptic('pop') // 샴페인 축포 — wiggle(흔들리듯)
     setTimeout(() => {
       setPopped(true)

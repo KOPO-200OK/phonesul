@@ -8,7 +8,7 @@ export default defineConfig({
   brand: {
     displayName: "폰술", // 화면 노출 한글명. // REVIEW(노출 문구): 콘솔 노출명과 일치 확인.
     primaryColor: "#BA68C8", // // REVIEW(노출 색상): 브랜드 확정 색으로 교체.
-    icon: "", // // REVIEW: 콘솔 등록 로고와 동일 아이콘 주소.
+    icon: "https://static.toss.im/appsintoss/49543/bbc49e5f-4398-4b00-995f-d3afbcb5e812.png", // // REVIEW: 콘솔 등록 로고 URL과 동일해야 함.
   },
   web: {
     // iOS 실기기 샌드박스 테스트 시에는 이 값을 "맥 LAN IP"로 바꿔야 폰이 dev 서버에 닿는다

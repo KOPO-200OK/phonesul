@@ -9,7 +9,7 @@ import AppHeader from '../components/AppHeader.jsx'
 import Glass from '../components/Glass.jsx'
 import { useAppStore } from '../store/useAppStore.js'
 import { createRoom, createRoomClient, closeRoom, roomClosedMessage } from '../lib/realtimeRoom.js'
-import { playSound, haptic } from '../lib/feedback.js'
+import { haptic } from '../lib/feedback.js'
 import { shareRoomCode } from '../lib/share.js'
 import { getNetwork } from '../lib/platform.js'
 import { DRINK_MAP } from '../data/presets.js'
@@ -53,10 +53,9 @@ export default function CheersRoom() {
   const cooldownRef = useRef(0)
   const hostTokenRef = useRef(null) // 방장만 보관(1회성, 서버 재발급 없음). 종료 REST 호출에 사용.
 
-  // 짠 수신(자기 포함 전원 동시) → 잔 연출 + 설정 종속 사운드·진동(F-SY 승계).
+  // 짠 수신(자기 포함 전원 동시) → 잔 연출 + 설정 종속 진동.
   const onCheers = useCallback(() => {
     setFlash(true)
-    playSound('clink') // F-SY-01: 사운드 Off/무음이면 feedback.js가 자동 억제
     haptic('strong') // 건배 짠 — 강하게. F-SY-02: 진동 Off면 호출 안 함(시각 피드백은 유지)
     clearTimeout(flashTimerRef.current)
     flashTimerRef.current = setTimeout(() => setFlash(false), CHEERS_FLASH_MS)
