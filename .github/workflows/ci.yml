@@ -1,0 +1,26 @@
+name: CI
+
+# 푸시·PR마다 자동 검증(테스트 + 빌드). 사람 검수 게이트 앞단의 '자동 게이트'.
+#   결정론적 vitest(외부 의존성 0)라 어디서나 동일 결과.
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: test + build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: install
+        # macOS에서 생성된 lockfile엔 rollup linux 바이너리 항목이 없어(npm/cli#4828) Linux CI에서
+        #   @rollup/rollup-linux-x64-gnu 누락 → lockfile 제거 후 재설치로 현재 플랫폼 optional deps 재해결.
+        run: rm -f package-lock.json && npm install
+      - name: unit/integration tests (vitest)
+        run: npm test
+      - name: build sanity (vite)
+        run: npx vite build

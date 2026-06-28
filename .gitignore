@@ -11,6 +11,8 @@
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 Icon?
+!public/assets/icons/
+!public/assets/icons/**
 
 # ===== Node =====
 node_modules/
@@ -21,12 +23,14 @@ pnpm-debug.log*
 .npm
 .pnpm-store/
 
-# ===== Vite / 빌드 산출물 =====
+# ===== Vite / 앱인토스(Granite) 빌드 산출물 =====
 dist/
 dist-ssr/
 build/
 *.local
 .vite/
+.granite/
+*.ait
 
 # ===== 환경 변수 (비밀값) =====
 .env
@@ -47,6 +51,11 @@ build/
 .temp/
 .tmp/
 coverage/
+
+# ===== 제출 제외 로컬 작업물 =====
+/outputs/
+/tmp/
+/repoint-ip.sh
 
 # ===== Claude Code 로컬 (개인 설정) =====
 # 팀 공유 CLAUDE.md는 커밋, 개인 로컬 오버라이드만 제외

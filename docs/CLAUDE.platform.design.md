@@ -1,6 +1,6 @@
-# CLAUDE.md — ② 앱인토스 플랫폼 규칙 (Platform Rules)
+# shared/platform.md — ② 앱인토스 플랫폼 규칙 (Platform Rules)
 
-> **이 파일의 위치**: 3-파일 CLAUDE.md 구조 중 두 번째.
+> **이 파일의 위치**: 여러 agent adapter가 공통으로 읽는 `shared/` 구조 중 두 번째.
 > ① 파이프라인 방법론 · ② 앱인토스 플랫폼 규칙(이 파일) · ③ 앱별 컨텍스트
 >
 > **이 파일은 앱인토스라는 특정 플랫폼에 종속된 규칙을 담는다.** 플랫폼이 바뀌면 이 파일만 교체하고 ①은 유지한다.
@@ -11,11 +11,11 @@
 
 ## 0. 역할 분담 — 이 파일이 다루지 않는 것
 
-**SDK 사용법(how)은 이 파일에 적지 않는다.** 함수 시그니처·API 구조·빌드·배포·TDS 적용은 앱인토스가 제공하는 도구에 위임한다:
+**SDK 사용법(how)과 agent별 설치 커맨드는 이 파일에 적지 않는다.** 함수 시그니처·API 구조·빌드·배포·TDS 적용은 adapter별 tool config와 앱인토스가 제공하는 도구에 위임한다:
 
-- **MCP (ax 툴킷)**: `claude mcp add --transport stdio apps-in-toss ax mcp start` — SDK 문서·코드 예제·프로젝트 생성·빌드·배포 워크플로우
-- **Skills (docs-search)**: `/plugin install knowledge-skills@apps-in-toss-skills` — 공식 문서 키워드·의미 검색
-- **프로젝트 생성 시**: `npx create-ait-app {appName}` 에서 TDS=Y, skills=Claude Code 선택
+- **MCP (ax 툴킷)**: SDK 문서·코드 예제·프로젝트 생성·빌드·배포 워크플로우 보조. 연결 방식은 agent adapter별로 관리한다.
+- **문서/스킬 폴백**: 공식 문서 키워드·의미 검색은 adapter별 지원 방식에 맞춘다.
+- **프로젝트 생성 시 agent 선택값**: 전환 시점의 앱인토스·agent 제품 문서로 재확인한다.
 
 > **이 파일이 다루는 것은 도구가 모르는 "정책 판단(what)"이다.** MCP는 "share 함수를 이렇게 쓴다"는 알려줘도 "이 앱의 이 기능이 정책에 걸린다"는 판단하지 못한다. 그 판단을 여기에 가드레일로 박는다.
 

@@ -1,0 +1,361 @@
+/* 디자인 시스템 — phonesul-react-with-assets_3 룩 반영(폰 목업 프레임·다크+골드).
+   화면 구성/스타일만 이식하고 앱 로직(라우터·스토어·실시간·pour 엔진)은 유지한다.
+   색·연출은 디자인 방향성 — 최종 비주얼은 에셋/검수 단계에서 확정(// REVIEW(에셋 일관성)). */
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  /* 디자인 토큰 — 화면설계서 v0.3 §5 정본 반영(웜 다크 팔레트). */
+  --bg:    #17141A;   /* color-bg-primary — 앱 기본 배경 */
+  --bg2:   #1F1B22;
+  --card:  #2B2630;   /* color-bg-card — 카드·항목 배경 */
+  --gold:  #F5C742;   /* accent-gold(밝은) — S-01/S-04 인터랙션·뱃지 */
+  --gold2: #CC9F1A;
+  --amber: #E8B96A;   /* accent-gold(앰버) — S-05/06/07/09 축하·건배·종료 */
+  --text:  #ECE7DD;   /* color-text-primary — 주요 텍스트(웜 화이트) */
+  --mut:   #A69EAD;   /* color-text-secondary */
+  --line:  #403847;   /* 진행바 트랙 */
+  --border:#343A49;   /* color-border — 카드·패널·모달 테두리 */
+  --gray3: #232739;
+  --dark:  #0A0809;
+  --radius: 16px;
+}
+
+html, body, #root { height: 100%; }
+body {
+  background: var(--dark);
+  color: var(--text);
+  font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  display: flex; align-items: center; justify-content: center; min-height: 100vh;
+}
+
+/* 폰 목업 프레임. // REVIEW(기기 확인): 실제 토스 WebView는 뷰포트를 꽉 채우므로
+   목업 고정크기 대신 100vw/100vh로 떨어지게 둠 — 데스크톱에선 375×812 목업으로 보임. */
+.phone-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+.phone {
+  width: min(375px, 100vw);
+  height: min(812px, 100vh);
+  background: var(--bg);
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 0 10px #0a0a0a, 0 30px 80px rgba(0,0,0,.9);
+  user-select: none;
+}
+@media (max-width: 420px) {
+  .phone { border-radius: 0; box-shadow: none; }
+}
+
+/* 화면 공통 — 폰 내부를 꽉 채움 */
+.screen { display: flex; flex-direction: column; width: 100%; height: 100%; background: var(--bg); position: relative; }
+.screen-body { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 16px 20px; overflow-y: auto; }
+.center { align-items: center; justify-content: center; text-align: center; }
+
+/* 공통 헤더(.header 룩) */
+.app-header {
+  position: relative; height: 56px; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg);
+}
+.hdr-title { font-size: 18px; font-weight: 600; }
+.hdr-btn { border: none; cursor: pointer; }
+.hdr-btn.back {
+  position: absolute; left: 10px; background: transparent;
+  font-size: 32px; color: rgba(255,255,255,.75); line-height: 1; padding: 4px 8px;
+}
+.hdr-btn.close {
+  position: absolute; right: 14px; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--gray3); color: rgba(255,255,255,.65); font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* 로고·슬로건 */
+.logo-img { width: 160px; height: 160px; object-fit: contain; margin-bottom: 20px; }
+.logo { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; }
+.slogan { color: var(--mut); font-size: 15px; margin-top: 12px; }
+
+/* 버튼 */
+.btn {
+  font-size: 16px; font-weight: 700; border: none; cursor: pointer;
+  border-radius: 26px; height: 52px; padding: 0 22px;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: transform .1s, opacity .1s;
+}
+.btn:active { transform: scale(.97); opacity: .9; }
+.btn.primary { background: var(--gold); color: var(--dark); }
+/* 축하·건배·종료 계열 CTA(S-05/06/07/09) — 앰버. 텍스트는 v0.3 명세 #2A1C08. */
+.btn.amber { background: var(--amber); color: #2A1C08; }
+.btn.ghost { background: var(--line); color: var(--text); }
+.btn.block { width: calc(100% - 0px); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+/* 화면 하단 고정 골드 버튼 */
+.btn-bottom { position: absolute; bottom: 32px; left: 20px; right: 20px; }
+
+/* 카드 */
+.card {
+  background: var(--card); border-radius: var(--radius); cursor: pointer;
+  transition: transform .1s, opacity .1s; color: var(--text); border: none;
+  width: 100%; text-align: left;
+}
+.card:active { transform: scale(.98); opacity: .9; }
+.card.card-on { box-shadow: 0 0 0 2px var(--gold); }
+.card-label { font-size: 18px; font-weight: 700; }
+.card-cap { font-size: 13px; color: var(--mut); margin-top: 6px; }
+
+/* 모드 선택 카드(아이콘 + 텍스트) */
+.mode-select-body {
+  padding: 24px 12px 0;
+  gap: 18px;
+  overflow: hidden;
+}
+
+.mode-card {
+  height: 155px;
+  margin-bottom: 0;
+  padding: 22px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  text-align: center;
+  border-radius: 14px;
+  background: var(--card);
+}
+
+/* 레퍼런스처럼 선택 테두리는 보이지 않게 처리 */
+.mode-card.card-on {
+  box-shadow: none;
+}
+
+.mode-icon-img {
+  display: block;
+  object-fit: contain;
+  margin-bottom: 4px;
+  pointer-events: none;
+}
+
+.mode-icon-img.moon {
+  width: 30px;
+  height: 29px;
+}
+
+.mode-icon-img.note {
+  width: 23px;
+  height: 31px;
+}
+
+.mode-card .card-label {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.mode-card .card-cap {
+  display: block;
+  margin-top: 0;
+  font-size: 13px;
+  color: var(--mut);
+}
+
+.mode-help {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+/* 술 선택 그리드 */
+.drink-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.drink-card {
+  background: var(--card); border: none; border-radius: var(--radius); cursor: pointer; color: var(--text);
+  height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  position: relative; transition: transform .1s, opacity .1s;
+}
+.drink-card:active { transform: scale(.98); opacity: .9; }
+.drink-thumb { width: 60px; height: 90px; object-fit: contain; }
+.drink-name { font-size: 15px; font-weight: 600; }
+/* 샴페인 풀위드 카드 — 텍스트(뱃지·이름)는 좌측 유지, 병만 카드 가로 중앙에 배치. */
+.drink-wide { position: relative; display: flex; align-items: center; justify-content: flex-start; padding: 16px 24px; min-height: 120px; flex-direction: row; }
+.drink-wide .drink-thumb { width: 50px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.badge {
+  background: var(--gold); color: var(--dark);
+  font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 10px; width: fit-content; margin-bottom: 8px;
+}
+/* 팡·짠 뱃지(S-05/S-07) — 앰버. 텍스트 #2A1C08(v0.3 명세). */
+.badge.amber { background: var(--amber); color: #2A1C08; }
+
+/* 설정 행 + 토글 */
+.row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 15px;
+}
+.row.muted { color: var(--mut); border-bottom: none; }
+.row .val { font-size: 14px; color: var(--mut); }
+.switch { width: 48px; height: 26px; border-radius: 13px; background: var(--line); position: relative; cursor: pointer; border: none; transition: background .2s; flex: none; }
+.switch[aria-checked="true"] { background: var(--gold); }
+.switch .knob { position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: left .2s; }
+.switch[aria-checked="true"] .knob { left: 22px; }
+
+.hint { font-size: 13px; color: var(--mut); }
+.hint.center { text-align: center; }
+
+/* ===== S-04 음주 인터랙션 — phonesul-react-with-assets_3 방식 ===== */
+/* 인터랙션 영역: 헤더 아래만 차지(헤더 버튼이 가려지지 않게 — 뒤로/닫기 버그 수정). */
+.pour-area {
+  flex: 1; position: relative; overflow: hidden;
+  touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+}
+.pour-area > div { position: absolute; inset: 0; }
+
+/* 대기 */
+.pour-idle { display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+.idle-bottle-box {
+  width: 160px; height: 280px; margin-bottom: 36px; border-radius: 20px;
+  background: rgba(255,255,255,.04); display: flex; align-items: center; justify-content: center;
+}
+
+/* 따르는 중 */
+/* 따르는 병 — 회전축=바닥 중앙(32,270). 최대 60° 회전 시 입구가
+   (32+180·sin60, 270−180·cos60) ≈ (188,180)=화면 가로 중앙 → 술줄기(.pour-stream) 윗점과 만남. */
+.pour-bottle {
+  position: absolute; left: 150px; top: 130px; width: 115px; height: 230px; object-fit: contain;
+  transform-origin: 50% 8%;; transition: transform 80ms linear;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,.5));
+}
+/* 술줄기 — 화면 가로 중앙(폭8 중심=50%). 윗점(top180)이 병 최대 기울기 입구와 만남. */
+.pour-stream { position: absolute; left: calc(50% - 6px); top: 174px; width: 12px; border-radius: 999px; transition: height 120ms ease, opacity 120ms ease, width 120ms ease; overflow: hidden; }
+.pour-stream::before { content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,.4), rgba(255,255,255,.03));
+  opacity: .25;
+}
+.pour-active .pour-stream { box-shadow: 0 0 16px rgba(255,255,255,.25); }
+.pour-drop { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; height: 16px; border-radius: 50%; box-shadow: 0 0 18px rgba(255,255,255,.3);
+  animation: drip 300ms linear infinite alternate;
+}
+@keyframes drip {
+  from { transform: translateX(-50%) translateY(0); }
+  to { transform: translateX(-50%) translateY(4px); }
+}
+/* 공용 잔 박스(Glass.jsx) — 잔 SVG + 보울 영역 액체 채움(따르기·마시기·건배 공용).
+   액체는 .glass-fill(보울 사각형, presets.js bowl로 위치 지정) 안에서만 차오른다. */
+.glass-box { position: relative; }
+.glass-fill-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.glass-fill-svg rect {
+  transition: height 180ms ease, y 180ms ease;
+}
+.glass-fill { position: absolute; overflow: hidden; z-index: 1; border-radius: 0 0 6px 6px; }
+.glass-fill-liquid { position: absolute; left: 0; right: 0; bottom: 0; transition: height 180ms ease; }
+.glass-box-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: 2; pointer-events: none; }
+/* 따르기 화면 잔 — 화면 가로 중앙(=술줄기 낙하점). 누르기 버튼과 간격 확보 위해 위로(bottom 200). */
+.glass-pour { position: absolute; left: 50%; transform: translateX(-50%); bottom: 200px; }
+.pour-tip {
+  position: absolute;
+  bottom: 130px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+  pointer-events: none;
+}
+/* "누르는 동안 차오름" — 터치 힌트 텍스트. */
+.pour-cap { position: absolute; bottom: 54px; left: 12px; right: calc(50% + 44px); text-align: right; font-size: 13px; color: rgba(255,255,255,.4); }
+
+/* 마시기 */
+.drink-active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.drink-glass-tap { position: relative; display: flex; align-items: flex-end; justify-content: center; cursor: pointer; margin-top: 40px; }
+.drink-glow { display: none; }
+
+.speech {
+  position: absolute; top: -10px; right: -24px; z-index: 3;
+  background: var(--gold); color: #111; font-weight: 700; font-size: 13px;
+  padding: 4px 12px; border-radius: 14px; white-space: nowrap;
+  animation: popIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+/* % 배지 — 화면 가로 중앙, 잔 위. */
+.fill-badge {
+  position: absolute; left: 50%; transform: translateX(-50%); bottom: 368px;
+  background: rgba(20,40,80,.85); color: #7ab8ff;
+  border-radius: 12px; padding: 3px 10px; font-size: 13px; font-weight: 700;
+}
+/* Long Press 칩 */
+.lp-chip {
+  margin-top: 28px; padding: 8px 24px; border-radius: 20px;
+  background: rgba(245,199,66,.12); border: 1px solid rgba(245,199,66,.3);
+  font-size: 13px; color: var(--gold);
+}
+/* 빈잔 오버레이 */
+.empty-overlay {
+  position: absolute; inset: 0; z-index: 20;
+  background: rgba(10,8,10,.9);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.empty-overlay .kya { font-size: 52px; font-weight: 900; color: var(--gold); animation: popIn .4s cubic-bezier(.34,1.56,.64,1); }
+.empty-overlay .sub { font-size: 16px; color: rgba(255,255,255,.55); margin-top: 12px; }
+
+.nav-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+/* 이퀄라이저(샴페인·건배 장식) — S-05/S-07 모두 앰버(#E8B96A). */
+.eq { display: flex; gap: 6px; align-items: flex-end; height: 30px; }
+.eq i { width: 6px; background: var(--amber); border-radius: 3px; opacity: .7; display: block; }
+
+/* ===== 모달(종료 확인) — 폰 내부 오버레이 ===== */
+.modal-overlay {
+  position: absolute; inset: 0; background: rgba(8,9,12,.62);
+  display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100;
+}
+/* 모달 카드 — v0.3 S-09: #20242E, 테두리 #343A49 1px, radius 16. */
+.modal-dialog { width: 100%; background: #20242E; border: 1px solid var(--border); border-radius: 16px; padding: 28px 20px 20px; text-align: center; }
+.modal-q { font-size: 17px; font-weight: 700; }
+.modal-sub { font-size: 13px; color: var(--mut); margin-top: 10px; }
+.modal-btns { display: flex; gap: 12px; margin-top: 28px; }
+.modal-btns .btn { flex: 1; height: 44px; font-size: 14px; }
+
+/* ===== S-10 실시간 건배방 ===== */
+.card-block { background: var(--card); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.card-block .card-label { font-size: 16px; }
+.join-row { display: flex; gap: 8px; }
+.code-input { flex: 1; min-width: 0; padding: 12px 14px; font-size: 14px; background: var(--bg2); color: var(--text); border: 1px solid var(--border); border-radius: 12px; }
+.code-input::placeholder { color: var(--mut); }
+
+.room-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.room-code { display: flex; flex-direction: column; align-items: flex-start; }
+.room-code-cap { font-size: 11px; color: var(--mut); }
+.room-code-val { font-size: 22px; font-weight: 900; letter-spacing: 2px; }
+.room-status { font-size: 12px; color: var(--mut); }
+.room-status-open { color: #7fc88a; }
+.room-status-connecting, .room-status-reconnecting { color: var(--gold); }
+.room-status-error { color: #d98a8a; }
+.roster-head { font-size: 12px; color: var(--mut); margin-bottom: 6px; }
+.roster-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.roster-item { background: var(--card); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+.roster-item.muted { color: var(--mut); }
+.cheers-stage { position: relative; display: flex; align-items: center; justify-content: center; height: 180px; }
+.glass-cheers { position: relative; display: inline-block; }
+.cheers-stage.is-cheers .glass-cheers { animation: clink 0.45s ease; }
+
+@keyframes popIn { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes clink {
+  0% { transform: rotate(0) translateX(0); }
+  25% { transform: rotate(-12deg) translateX(-8px); }
+  55% { transform: rotate(8deg) translateX(6px); }
+  100% { transform: rotate(0) translateX(0); }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-8px) rotate(-4deg); }
+  75% { transform: translateX(8px) rotate(4deg); }
+}
