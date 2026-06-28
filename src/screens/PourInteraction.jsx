@@ -83,6 +83,8 @@ export default function PourInteraction() {
     }
     setIsPressing(true)
     setPhase('pour')
+    // 토스 WebView/iOS 자동재생 정책 대응: 첫 사용자 제스처 안에서 BGM도 함께 시작한다.
+    startBgm(mode)
     startPourSound(drink.sound)
     // start with a short stream
     streamRef.current = STREAM_START_HEIGHT
@@ -139,7 +141,7 @@ export default function PourInteraction() {
         setPhase('drink')
       }
     }, FILL_INTERVAL)
-  }, [drink.sound, fillPerTick, stopFilling, stopStream])
+  }, [drink.sound, fillPerTick, mode, stopFilling, stopStream])
 
   const startRetracting = useCallback(() => {
     if (streamTimer.current) {

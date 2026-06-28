@@ -1,10 +1,11 @@
 // 사운드·햅틱 피드백 인터페이스.
 //   햅틱: 앱인토스 generateHapticFeedback SDK 연결됨(데스크톱/브라우저는 navigator.vibrate 폴백).
-//   사운드(효과음): 아직 mock(콘솔 로그). 따르기 사운드만 실제 Audio 재생.
+//   사운드: 짧은 효과음 + 따르기 루프를 실제 Audio로 재생.
 //
 // // UNVERIFIED: 실기기 토스 WebView에서 햅틱 실제 동작, 무음 모드 존중(F-SY-03),
 //   백그라운드 전환 시 정지/복귀(F-SY-04)는 샌드박스/실기기에서만 최종 검증 가능.
 import { useAppStore } from '../store/useAppStore.js'
+import { assetUrl } from '../data/presets.js'
 
 // 데스크톱/브라우저 폴백용 햅틱 세기(ms; pop은 흔들리는 패턴 배열). 실기기는 SDK 햅틱을 쓴다.
 const VIBRATE_MS = { light: 8, medium: 18, strong: 40, pop: [30, 30, 30, 30, 60] }
@@ -13,11 +14,29 @@ const VIBRATE_MS = { light: 8, medium: 18, strong: 40, pop: [30, 30, 30, 30, 60]
 //   호출부 의미(light/medium/strong/pop)는 그대로 두고 여기서만 SDK 타입에 매핑한다.
 //   pop = wiggle(축포처럼 흔들리는 진동), strong = basicMedium(강한 기본 진동).
 const HAPTIC_SDK_TYPE = { light: 'tickWeak', medium: 'tickMedium', strong: 'basicMedium', pop: 'wiggle' }
+const EFFECT_SOUND = {
+  gulp: assetUrl('sounds/pour/soju.mp3'),
+  ahh: assetUrl('sounds/pour/soju.mp3'),
+}
+const activeEffects = new Set()
 
 export function playSound(name) {
   // F-SY-01: 사운드 Off면 재생 안 함. (무음 모드 존중 F-SY-03은 실기기 필요 → UNVERIFIED)
   if (!useAppStore.getState().settings.sound) return
-  // mock: 실제 오디오 재생 대신 로그만. TODO(S2): 오디오 에셋 + 무음/백그라운드 정책 연결.
+  const url = EFFECT_SOUND[name]
+  if (!url) return
+  try {
+    const audio = new Audio(url)
+    audio.volume = 0.75
+    const cleanup = () => activeEffects.delete(audio)
+    audio.addEventListener('ended', cleanup, { once: true })
+    audio.addEventListener('error', cleanup, { once: true })
+    activeEffects.add(audio)
+    const p = audio.play()
+    if (p && typeof p.catch === 'function') p.catch(cleanup)
+  } catch {
+    /* ignore */
+  }
   if (import.meta.env.DEV) console.debug('[sound]', name)
 }
 
@@ -32,6 +51,7 @@ export function startPourSound(url) {
   try {
     pourAudio = new Audio(url)
     pourAudio.loop = true
+    pourAudio.volume = 0.8
     const p = pourAudio.play()
     if (p && typeof p.catch === 'function') p.catch(() => {}) // 자동재생 차단 등 무시
   } catch {

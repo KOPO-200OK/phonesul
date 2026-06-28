@@ -6,7 +6,7 @@
   "description": "폰술 — 절주·대체형 소셜 WebApp. 앱인토스(Granite) 변환됨. appName=phonesul(콘솔 등록·승인 완료, 변경 불가). name 필드는 npm 패키지명일 뿐 appName 아님.",
   "scripts": {
     "dev": "granite dev",
-    "build": "ait build",
+    "build": "VITE_RT_SERVER_URL=https://phonesul-server.fly.dev ait build",
     "deploy": "ait deploy",
     "test": "vitest run"
   },
